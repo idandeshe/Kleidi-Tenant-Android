@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- app_name comes from the product flavor (app/build.gradle.kts). -->
+
+    <!-- Language (first onboarding screen) -->
+    <string name="language_title">Choose your language</string>
+    <string name="language_subtitle">You can change it any time in Profile.</string>
+    <string name="language_greek">Ελληνικά</string>
+    <string name="language_english">English</string>
+    <string name="language_continue">Continue</string>
+
+    <!-- Phone -->
+    <string name="phone_title">Sign in</string>
+    <string name="phone_subtitle">Enter the mobile number your property manager has for you. We will text you a code.</string>
+    <string name="phone_country_code">Country code</string>
+    <string name="phone_number">Mobile number</string>
+    <string name="phone_send_code">Send code</string>
+    <string name="phone_sms_unavailable">Signing in by text message is temporarily unavailable. Please try again later.</string>
+    <string name="phone_server">Server: %1$s</string>
+
+    <!-- Code -->
+    <string name="code_title">Enter the code</string>
+    <string name="code_subtitle">We sent a 6-digit code to %1$s.</string>
+    <string name="code_field">6-digit code</string>
+    <string name="code_verify">Verify</string>
+    <string name="code_send_again">Send again</string>
+    <string name="code_send_again_in">Send again in %1$d s</string>
+    <string name="code_expires_in">The code expires in %1$s</string>
+    <string name="code_expired">The code has expired. Send a new one.</string>
+    <string name="code_sent_again">A new code is on its way.</string>
+    <string name="code_change_number">Change number</string>
+
+    <!-- Notices on the sign-in screen -->
+    <string name="notice_session_ended">Your session has ended. Please sign in again.</string>
+    <string name="notice_no_longer_tenant">This number is no longer linked to an active lease. Please contact your property manager.</string>
+    <string name="notice_offline">Could not reach Kleidi. Check your connection and try again.</string>
+
+    <!-- Errors -->
+    <string name="error_invalid_code">That code is not right. Check it and try again.</string>
+    <string name="error_code_expired">This code has expired. Send a new one.</string>
+    <string name="error_too_many_attempts">Too many wrong attempts. Send a new code.</string>
+    <string name="error_not_a_tenant">This number is not linked to a lease. Please contact your property manager.</string>
+    <string name="error_invalid_phone">Enter a valid mobile number.</string>
+    <string name="error_sms_not_configured">Signing in by text message is not available right now. Please try again later.</string>
+    <string name="error_rate_limited">Too many requests. Please wait a moment and try again.</string>
+    <string name="error_offline">Could not reach Kleidi. Check your connection.</string>
+    <string name="error_update_required">This version of the app is no longer supported. Please update it.</string>
+    <string name="error_decoding">Kleidi sent something this version of the app does not understand. Please update the app.</string>
+    <string name="error_server">Something went wrong on our side. Please try again.</string>
+    <string name="error_not_signed_in">Please sign in.</string>
+    <string name="error_generic">Something went wrong. Please try again.</string>
+
+    <!-- Tabs -->
+    <string name="tab_home">Home</string>
+    <string name="tab_payments">Payments</string>
+    <string name="tab_issues">Issues</string>
+    <string name="tab_profile">Profile</string>
+
+    <!-- Home -->
+    <string name="home_title">My lease</string>
+    <string name="home_greeting">Hello, %1$s</string>
+    <string name="home_rent_for">Rent for %1$s</string>
+    <string name="home_due_pill">Due on the %1$s</string>
+    <string name="home_paid_transfer">I paid by bank transfer</string>
+    <string name="home_paid_transfer_soon">Available soon — you will be able to tell us when you have paid.</string>
+    <string name="home_pay_online">Pay online</string>
+    <string name="home_coming_soon">Coming soon</string>
+    <string name="home_pay_online_note">Card and bank payments straight from the app.</string>
+    <string name="home_your_lease">Your lease</string>
+    <string name="home_upcoming_rent">From %1$s the rent is %2$s.</string>
+    <string name="home_past_end">The agreed end date has passed; the lease continues until it is closed.</string>
+    <string name="home_report_issue_title">Something broken?</string>
+    <string name="home_report_issue_action">Report an issue</string>
+    <string name="home_no_lease_title">No lease yet</string>
+    <string name="home_no_lease_message">When your property manager links a lease to this number, it will show up here.</string>
+
+    <!-- Lease details -->
+    <string name="lease_address">Address</string>
+    <string name="lease_status">Status</string>
+    <string name="lease_start">Start</string>
+    <string name="lease_end">End</string>
+    <string name="lease_end_open">Open-ended</string>
+    <string name="lease_rent">Monthly rent</string>
+    <string name="lease_upcoming_rent">Upcoming rent</string>
+    <string name="lease_deposit">Deposit</string>
+    <string name="lease_payment_day">Payment day</string>
+    <string name="lease_payment_day_value">The %1$s of each month</string>
+    <string name="lease_payment_method">Payment method</string>
+    <string name="lease_notice_period">Notice period</string>
+    <plurals name="lease_notice_months">
+        <item quantity="one">%d month</item>
+        <item quantity="other">%d months</item>
+    </plurals>
+    <string name="lease_notice_deadline">Give notice by</string>
+    <string name="lease_not_set">—</string>
+
+    <string name="lease_status_upcoming">Upcoming</string>
+    <string name="lease_status_active">Active</string>
+    <string name="lease_status_ended">Ended</string>
+    <string name="lease_status_terminated">Terminated</string>
+
+    <string name="payment_method_bank_transfer">Bank transfer</string>
+    <string name="payment_method_cheques">Cheques</string>
+    <string name="payment_method_cash">Cash</string>
+    <string name="payment_method_standing_order">Standing order</string>
+    <string name="payment_method_other">Other</string>
+
+    <string name="floor_basement">Basement</string>
+    <string name="floor_semi_basement">Semi-basement</string>
+    <string name="floor_ground">Ground floor</string>
+    <string name="floor_upper_ground">Upper ground floor</string>
+    <string name="floor_numbered">%1$s floor</string>
+
+    <!-- Placeholders -->
+    <string name="placeholder_title">Coming in a later release</string>
+    <string name="placeholder_payments_message">Your rent payments and receipts will live here.</string>
+    <string name="placeholder_issues_message">Report and follow maintenance issues here.</string>
+
+    <!-- Profile -->
+    <string name="profile_title">Profile</string>
+    <string name="profile_phone">Mobile</string>
+    <string name="profile_email">Email</string>
+    <string name="profile_email_none">No email on file</string>
+    <string name="profile_language">Language</string>
+    <string name="profile_language_sync_failed">The language was changed on this phone but could not be saved to your account. It will be retried the next time you sign in.</string>
+    <string name="profile_sign_out">Sign out</string>
+    <string name="profile_sign_out_everywhere">Sign out everywhere</string>
+    <string name="profile_sign_out_everywhere_message">This signs you out on every phone and browser where you are signed in.</string>
+    <string name="profile_version">Version %1$s (%2$d)</string>
+    <string name="profile_server">Server: %1$s</string>
+
+    <!-- Forced update -->
+    <string name="update_title">Update required</string>
+    <string name="update_message">This version of the Kleidi tenant app is no longer supported. Install the latest version to continue.</string>
+    <string name="update_action">Update on Google Play</string>
+
+    <!-- Common -->
+    <string name="common_retry">Retry</string>
+    <string name="common_error_title">Could not load</string>
+    <string name="common_cancel">Cancel</string>
+</resources>

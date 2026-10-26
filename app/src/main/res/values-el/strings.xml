@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Γλώσσα (πρώτη οθόνη) -->
+    <string name="language_title">Επιλέξτε γλώσσα</string>
+    <string name="language_subtitle">Μπορείτε να την αλλάξετε όποτε θέλετε από το Προφίλ.</string>
+    <string name="language_greek">Ελληνικά</string>
+    <string name="language_english">English</string>
+    <string name="language_continue">Συνέχεια</string>
+
+    <!-- Τηλέφωνο -->
+    <string name="phone_title">Σύνδεση</string>
+    <string name="phone_subtitle">Γράψτε το κινητό που έχει δηλωμένο ο διαχειριστής του ακινήτου σας. Θα σας στείλουμε έναν κωδικό με SMS.</string>
+    <string name="phone_country_code">Κωδικός χώρας</string>
+    <string name="phone_number">Κινητό</string>
+    <string name="phone_send_code">Αποστολή κωδικού</string>
+    <string name="phone_sms_unavailable">Η σύνδεση με SMS δεν είναι διαθέσιμη αυτή τη στιγμή. Δοκιμάστε ξανά αργότερα.</string>
+    <string name="phone_server">Διακομιστής: %1$s</string>
+
+    <!-- Κωδικός -->
+    <string name="code_title">Γράψτε τον κωδικό</string>
+    <string name="code_subtitle">Στείλαμε έναν 6ψήφιο κωδικό στο %1$s.</string>
+    <string name="code_field">6ψήφιος κωδικός</string>
+    <string name="code_verify">Επαλήθευση</string>
+    <string name="code_send_again">Αποστολή ξανά</string>
+    <string name="code_send_again_in">Αποστολή ξανά σε %1$d δ.</string>
+    <string name="code_expires_in">Ο κωδικός λήγει σε %1$s</string>
+    <string name="code_expired">Ο κωδικός έληξε. Ζητήστε έναν νέο.</string>
+    <string name="code_sent_again">Σας στείλαμε νέο κωδικό.</string>
+    <string name="code_change_number">Αλλαγή αριθμού</string>
+
+    <!-- Μηνύματα στην οθόνη σύνδεσης -->
+    <string name="notice_session_ended">Η σύνδεσή σας έληξε. Συνδεθείτε ξανά.</string>
+    <string name="notice_no_longer_tenant">Ο αριθμός αυτός δεν συνδέεται πλέον με ενεργή μίσθωση. Επικοινωνήστε με τον διαχειριστή του ακινήτου.</string>
+    <string name="notice_offline">Δεν ήταν δυνατή η επικοινωνία με το Kleidi. Ελέγξτε τη σύνδεσή σας και δοκιμάστε ξανά.</string>
+
+    <!-- Σφάλματα -->
+    <string name="error_invalid_code">Ο κωδικός δεν είναι σωστός. Ελέγξτε τον και δοκιμάστε ξανά.</string>
+    <string name="error_code_expired">Ο κωδικός έληξε. Ζητήστε έναν νέο.</string>
+    <string name="error_too_many_attempts">Πολλές λανθασμένες προσπάθειες. Ζητήστε νέο κωδικό.</string>
+    <string name="error_not_a_tenant">Ο αριθμός αυτός δεν συνδέεται με κάποια μίσθωση. Επικοινωνήστε με τον διαχειριστή του ακινήτου.</string>
+    <string name="error_invalid_phone">Γράψτε έναν έγκυρο αριθμό κινητού.</string>
+    <string name="error_sms_not_configured">Η σύνδεση με SMS δεν είναι διαθέσιμη αυτή τη στιγμή. Δοκιμάστε ξανά αργότερα.</string>
+    <string name="error_rate_limited">Πολλές προσπάθειες. Περιμένετε λίγο και δοκιμάστε ξανά.</string>
+    <string name="error_offline">Δεν ήταν δυνατή η επικοινωνία με το Kleidi. Ελέγξτε τη σύνδεσή σας.</string>
+    <string name="error_update_required">Αυτή η έκδοση της εφαρμογής δεν υποστηρίζεται πλέον. Ενημερώστε την.</string>
+    <string name="error_decoding">Το Kleidi έστειλε κάτι που αυτή η έκδοση της εφαρμογής δεν καταλαβαίνει. Ενημερώστε την εφαρμογή.</string>
+    <string name="error_server">Κάτι πήγε στραβά από τη δική μας πλευρά. Δοκιμάστε ξανά.</string>
+    <string name="error_not_signed_in">Συνδεθείτε για να συνεχίσετε.</string>
+    <string name="error_generic">Κάτι πήγε στραβά. Δοκιμάστε ξανά.</string>
+
+    <!-- Καρτέλες -->
+    <string name="tab_home">Αρχική</string>
+    <string name="tab_payments">Πληρωμές</string>
+    <string name="tab_issues">Βλάβες</string>
+    <string name="tab_profile">Προφίλ</string>
+
+    <!-- Αρχική -->
+    <string name="home_title">Η μίσθωσή μου</string>
+    <string name="home_greeting">Γεια σας, %1$s</string>
+    <string name="home_rent_for">Ενοίκιο %1$s</string>
+    <string name="home_due_pill">Πληρωτέο έως %1$s του μήνα</string>
+    <string name="home_paid_transfer">Πλήρωσα με τραπεζικό έμβασμα</string>
+    <string name="home_paid_transfer_soon">Σύντομα διαθέσιμο — θα μπορείτε να μας ενημερώνετε όταν έχετε πληρώσει.</string>
+    <string name="home_pay_online">Πληρωμή online</string>
+    <string name="home_coming_soon">Σύντομα</string>
+    <string name="home_pay_online_note">Πληρωμές με κάρτα ή μέσω τράπεζας απευθείας από την εφαρμογή.</string>
+    <string name="home_your_lease">Η μίσθωσή σας</string>
+    <string name="home_upcoming_rent">Από %1$s το ενοίκιο γίνεται %2$s.</string>
+    <string name="home_past_end">Η συμφωνημένη ημερομηνία λήξης έχει παρέλθει· η μίσθωση συνεχίζεται μέχρι να κλείσει.</string>
+    <string name="home_report_issue_title">Κάτι χάλασε;</string>
+    <string name="home_report_issue_action">Δηλώστε βλάβη</string>
+    <string name="home_no_lease_title">Δεν υπάρχει μίσθωση ακόμη</string>
+    <string name="home_no_lease_message">Όταν ο διαχειριστής του ακινήτου συνδέσει μια μίσθωση με αυτόν τον αριθμό, θα εμφανιστεί εδώ.</string>
+
+    <!-- Στοιχεία μίσθωσης -->
+    <string name="lease_address">Διεύθυνση</string>
+    <string name="lease_status">Κατάσταση</string>
+    <string name="lease_start">Έναρξη</string>
+    <string name="lease_end">Λήξη</string>
+    <string name="lease_end_open">Αορίστου χρόνου</string>
+    <string name="lease_rent">Μηνιαίο ενοίκιο</string>
+    <string name="lease_upcoming_rent">Επόμενο ενοίκιο</string>
+    <string name="lease_deposit">Εγγύηση</string>
+    <string name="lease_payment_day">Ημέρα πληρωμής</string>
+    <string name="lease_payment_day_value">Κάθε %1$s του μήνα</string>
+    <string name="lease_payment_method">Τρόπος πληρωμής</string>
+    <string name="lease_notice_period">Προειδοποίηση</string>
+    <plurals name="lease_notice_months">
+        <item quantity="one">%d μήνας</item>
+        <item quantity="other">%d μήνες</item>
+    </plurals>
+    <string name="lease_notice_deadline">Ειδοποίηση έως</string>
+    <string name="lease_not_set">—</string>
+
+    <string name="lease_status_upcoming">Επερχόμενη</string>
+    <string name="lease_status_active">Ενεργή</string>
+    <string name="lease_status_ended">Ολοκληρωμένη</string>
+    <string name="lease_status_terminated">Λυμένη</string>
+
+    <string name="payment_method_bank_transfer">Τραπεζικό έμβασμα</string>
+    <string name="payment_method_cheques">Επιταγές</string>
+    <string name="payment_method_cash">Μετρητά</string>
+    <string name="payment_method_standing_order">Πάγια εντολή</string>
+    <string name="payment_method_other">Άλλο</string>
+
+    <string name="floor_basement">Υπόγειο</string>
+    <string name="floor_semi_basement">Ημιυπόγειο</string>
+    <string name="floor_ground">Ισόγειο</string>
+    <string name="floor_upper_ground">Υπερυψωμένο ισόγειο</string>
+    <string name="floor_numbered">%1$sος όροφος</string>
+
+    <!-- Προσωρινές οθόνες -->
+    <string name="placeholder_title">Έρχεται σε επόμενη έκδοση</string>
+    <string name="placeholder_payments_message">Εδώ θα βλέπετε τις πληρωμές του ενοικίου και τις αποδείξεις σας.</string>
+    <string name="placeholder_issues_message">Εδώ θα δηλώνετε και θα παρακολουθείτε βλάβες.</string>
+
+    <!-- Προφίλ -->
+    <string name="profile_title">Προφίλ</string>
+    <string name="profile_phone">Κινητό</string>
+    <string name="profile_email">Email</string>
+    <string name="profile_email_none">Δεν υπάρχει καταχωρημένο email</string>
+    <string name="profile_language">Γλώσσα</string>
+    <string name="profile_language_sync_failed">Η γλώσσα άλλαξε σε αυτό το τηλέφωνο, αλλά δεν αποθηκεύτηκε στον λογαριασμό σας. Θα γίνει νέα προσπάθεια στην επόμενη σύνδεση.</string>
+    <string name="profile_sign_out">Αποσύνδεση</string>
+    <string name="profile_sign_out_everywhere">Αποσύνδεση από όλες τις συσκευές</string>
+    <string name="profile_sign_out_everywhere_message">Θα αποσυνδεθείτε από κάθε τηλέφωνο και πρόγραμμα περιήγησης όπου είστε συνδεδεμένοι.</string>
+    <string name="profile_version">Έκδοση %1$s (%2$d)</string>
+    <string name="profile_server">Διακομιστής: %1$s</string>
+
+    <!-- Υποχρεωτική ενημέρωση -->
+    <string name="update_title">Απαιτείται ενημέρωση</string>
+    <string name="update_message">Αυτή η έκδοση της εφαρμογής ενοικιαστή Kleidi δεν υποστηρίζεται πλέον. Εγκαταστήστε την τελευταία έκδοση για να συνεχίσετε.</string>
+    <string name="update_action">Ενημέρωση από το Google Play</string>
+
+    <!-- Κοινά -->
+    <string name="common_retry">Δοκιμάστε ξανά</string>
+    <string name="common_error_title">Δεν ήταν δυνατή η φόρτωση</string>
+    <string name="common_cancel">Άκυρο</string>
+</resources>
