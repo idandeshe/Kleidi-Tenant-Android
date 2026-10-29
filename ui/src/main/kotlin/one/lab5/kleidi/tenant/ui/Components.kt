@@ -104,7 +104,7 @@ enum class PillTone { Accent, Neutral, Success, Warning, Error }
 
 /** A small rounded label: the due day on the rent card, a status, "COMING SOON". */
 @Composable
-fun Pill(text: String, tone: PillTone = PillTone.Accent, modifier: Modifier = Modifier, uppercase: Boolean = false) {
+fun Pill(text: String, tone: PillTone = PillTone.Accent, modifier: Modifier = Modifier, uppercase: Boolean = false, singleLine: Boolean = true) {
     val c = TenantTheme.colors
     val (fill, color) = when (tone) {
         PillTone.Accent -> c.accentSoft to c.accent
@@ -118,7 +118,8 @@ fun Pill(text: String, tone: PillTone = PillTone.Accent, modifier: Modifier = Mo
         modifier = modifier.background(fill, PillShape).padding(horizontal = 10.dp, vertical = 4.dp),
         style = if (uppercase) MaterialTheme.typography.labelSmall else MaterialTheme.typography.labelMedium,
         color = color,
-        maxLines = 1,
+        maxLines = if (singleLine) 1 else Int.MAX_VALUE,
+        textAlign = if (singleLine) null else TextAlign.End,
     )
 }
 
@@ -278,9 +279,10 @@ fun ListRow(
     }
 }
 
+/** Hairline between rows; [inset] for rows that carry their own 16.dp horizontal padding. */
 @Composable
-fun RowDivider() {
-    HorizontalDivider(color = TenantTheme.colors.hairline, modifier = Modifier.padding(horizontal = 16.dp))
+fun RowDivider(inset: Boolean = true) {
+    HorizontalDivider(color = TenantTheme.colors.hairline, modifier = if (inset) Modifier.padding(horizontal = 16.dp) else Modifier)
 }
 
 /** The state of one screen's data. */

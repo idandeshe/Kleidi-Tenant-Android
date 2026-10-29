@@ -26,6 +26,8 @@ import androidx.compose.ui.unit.dp
 import one.lab5.kleidi.tenant.R
 import one.lab5.kleidi.tenant.api.models.Tenant
 import one.lab5.kleidi.tenant.features.home.HomeScreen
+import one.lab5.kleidi.tenant.features.payments.DeclareWireScreen
+import one.lab5.kleidi.tenant.features.payments.PaymentsScreen
 import one.lab5.kleidi.tenant.features.placeholder.ComingSoonScreen
 import one.lab5.kleidi.tenant.features.profile.ProfileScreen
 import one.lab5.kleidi.tenant.ui.TenantTheme
@@ -38,10 +40,25 @@ enum class Tab(val labelRes: Int, val icon: ImageVector) {
     Profile(R.string.tab_profile, Icons.Outlined.Person),
 }
 
+/**
+ * The signed-in app: the four tabs, plus the "Declare a bank transfer" screen pushed over them
+ * from Home or Payments (it replaces the tab content and bottom bar while open, as on the web).
+ */
 @Composable
 fun MainScaffold(tenant: Tenant) {
     var selected by rememberSaveable { mutableStateOf(Tab.Home) }
+    var declaringLeaseId by rememberSaveable { mutableStateOf<String?>(null) }
     val colors = TenantTheme.colors
+
+    declaringLeaseId?.let { leaseId ->
+        DeclareWireScreen(
+            leaseId = leaseId,
+            onCancel = { declaringLeaseId = null },
+            onOpenPayments = { declaringLeaseId = null; selected = Tab.Payments },
+            onBackHome = { declaringLeaseId = null; selected = Tab.Home },
+        )
+        return
+    }
 
     Scaffold(
         containerColor = colors.ground,
@@ -67,8 +84,8 @@ fun MainScaffold(tenant: Tenant) {
     ) { padding ->
         Box(Modifier.fillMaxSize().padding(padding)) {
             when (selected) {
-                Tab.Home -> HomeScreen(tenant, onReportIssue = { selected = Tab.Issues })
-                Tab.Payments -> ComingSoonScreen(R.string.tab_payments, R.string.placeholder_payments_message)
+                Tab.Home -> HomeScreen(tenant, onReportIssue = { selected = Tab.Issues }, onDeclare = { declaringLeaseId = it })
+                Tab.Payments -> PaymentsScreen(onDeclare = { declaringLeaseId = it })
                 Tab.Issues -> ComingSoonScreen(R.string.tab_issues, R.string.placeholder_issues_message)
                 Tab.Profile -> ProfileScreen(tenant)
             }

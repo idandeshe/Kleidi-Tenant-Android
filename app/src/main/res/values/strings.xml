@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- app_name comes from the product flavor (app/build.gradle.kts). -->
 
     <!-- Language (first onboarding screen) -->
@@ -62,7 +62,7 @@
     <string name="home_rent_for">Rent for %1$s</string>
     <string name="home_due_pill">Due on the %1$s</string>
     <string name="home_paid_transfer">I paid by bank transfer</string>
-    <string name="home_paid_transfer_soon">Available soon — you will be able to tell us when you have paid.</string>
+    <string name="home_paid_transfer_soon">Paid already? Declare the transfer and attach the bank confirmation.</string>
     <string name="home_pay_online">Pay online</string>
     <string name="home_coming_soon">Coming soon</string>
     <string name="home_pay_online_note">Card and bank payments straight from the app.</string>
@@ -113,7 +113,6 @@
 
     <!-- Placeholders -->
     <string name="placeholder_title">Coming in a later release</string>
-    <string name="placeholder_payments_message">Your rent payments and receipts will live here.</string>
     <string name="placeholder_issues_message">Report and follow maintenance issues here.</string>
 
     <!-- Profile -->
@@ -138,4 +137,63 @@
     <string name="common_retry">Retry</string>
     <string name="common_error_title">Could not load</string>
     <string name="common_cancel">Cancel</string>
+
+    <!-- Rent months + declarations (Payments tab, Home rent card) -->
+    <string name="rent_title">Rent</string>
+    <string name="rent_status_paid">Paid</string>
+    <string name="rent_status_declared">Wire declared, waiting for confirmation</string>
+    <string name="rent_status_due">Due</string>
+    <string name="rent_status_overdue">Overdue</string>
+    <string name="rent_status_upcoming">Upcoming</string>
+    <string name="rent_confirmed_by_wire">Wire confirmed by property owner</string>
+    <string name="rent_rejected">Wire not confirmed — please contact management</string>
+    <string name="rent_rejected_note">Note from management: %1$s</string>
+    <string name="rent_declared_on">Declared %1$s</string>
+    <string name="rent_paid_on">Paid %1$s</string>
+    <string name="rent_due_on">Due %1$s</string>
+    <string name="rent_declare">I paid by bank transfer</string>
+    <string name="rent_nothing_to_declare">Nothing to declare — every month is paid or already declared.</string>
+    <string name="rent_history">Your declarations</string>
+    <string name="rent_no_history">No bank-transfer declarations yet.</string>
+    <string name="rent_declaration_status_pending">Waiting for confirmation</string>
+    <string name="rent_declaration_status_confirmed">Confirmed by property owner</string>
+    <string name="rent_declaration_status_rejected">Not confirmed</string>
+    <string name="rent_view_proof">View proof</string>
+
+    <!-- "I paid by bank transfer" -->
+    <string name="wire_title">Declare a bank transfer</string>
+    <string name="wire_intro">Tell your property manager which rent you paid and attach the bank confirmation. They will check it and confirm.</string>
+    <string name="wire_months_label">Which months did you pay?</string>
+    <string name="wire_months_hint">Pick one or more months covered by this transfer.</string>
+    <string name="wire_amount_label">Amount transferred</string>
+    <string name="wire_amount_hint">Rent for the selected months: %1$s</string>
+    <string name="wire_date_label">Transfer date</string>
+    <string name="wire_reference_label">Payment reference (optional)</string>
+    <string name="wire_reference_placeholder">e.g. Rent October — Papadopoulos</string>
+    <string name="wire_proof_label">Proof of transfer</string>
+    <string name="wire_proof_hint">A screenshot, photo or PDF of the bank confirmation — JPG, PNG, WebP or PDF, up to 15 MB.</string>
+    <string name="wire_proof_pick">Choose a file</string>
+    <string name="wire_proof_change">Change file</string>
+    <string name="wire_proof_heic" tools:ignore="UnusedResources">HEIC photos are not supported here. Please export the photo as JPG, or use the Kleidi Tenant app on your phone.</string>
+    <string name="wire_proof_too_large">The file is larger than 15 MB.</string>
+    <string name="wire_proof_required">Please attach the bank confirmation.</string>
+    <string name="wire_months_required">Please pick at least one month.</string>
+    <string name="wire_amount_required">Please enter the amount you transferred.</string>
+    <string name="wire_date_required">Please enter the transfer date.</string>
+    <string name="wire_submit">Send declaration</string>
+    <string name="wire_submitting">Sending…</string>
+    <string name="wire_done_title">Wire declared</string>
+    <string name="wire_done_body">Thank you. Your property manager will check the transfer and confirm it — you will see "Wire confirmed by property owner" on the month.</string>
+    <string name="wire_back_home">Back to home</string>
+    <string name="wire_cancel">Cancel</string>
+
+    <!-- Proof picker / viewer (Android only: the sources of a file, and what can go wrong reading it) -->
+    <string name="proof_source_camera">Camera</string>
+    <string name="proof_source_gallery">Gallery</string>
+    <string name="proof_source_files">Files</string>
+    <string name="proof_read_failed">Could not read that file. Please choose another one.</string>
+    <string name="proof_file_size_kb">%1$s · %2$d KB</string>
+    <string name="error_wire_conflict">That month is already paid or already declared. Refresh and try again.</string>
+    <string name="common_close">Close</string>
+    <string name="common_ok">OK</string>
 </resources>

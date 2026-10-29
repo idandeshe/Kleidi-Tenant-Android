@@ -21,7 +21,7 @@ android {
         // Bump on every Play upload; the server's TENANT_ANDROID_MIN_SUPPORTED_BUILD compares against it
         // (sent as x-client-build).
         versionCode = 1
-        versionName = "0.1.0"
+        versionName = "0.2.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -87,6 +87,7 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.exifinterface)
     implementation(libs.kotlinx.coroutines.android)
     debugImplementation(libs.compose.ui.tooling)
 

@@ -10,11 +10,11 @@ lease details, and (in later phases) payments and maintenance issues. A Kotlin /
 
 | Path | What |
 |------|------|
-| `core/` | Pure Kotlin: `AppLanguage` (EL / EN, device default), lease values (`LeaseStatus`, `PaymentMethod`, `FloorLevel`) and their label keys, `LeaseFormatting` (money, rent month, ordinals, which lease to show), `KleidiDateFormatter` (`DD/MM/YYYY`), `PhoneNumber` (E.164). |
-| `api/` | Pure Kotlin: `ApiClient` (tenant headers, Bearer, single-flight refresh, errors, events), serializable models (`Tenant`, `TenantConfig`, `TenantLease`), `endpoints/TenantEndpoints.kt`. OkHttp + kotlinx.serialization. |
+| `core/` | Pure Kotlin: `AppLanguage` (EL / EN, device default), lease values (`LeaseStatus`, `PaymentMethod`, `FloorLevel`) and rent values (`RentMonthStatus`, `WireDeclarationStatus`) with their label keys, `LeaseFormatting` (money, rent month, ordinals, which lease to show), `RentFormatting` (`YYYY-MM` → month name), `WireDeclarationRules` (proof types / 15 MB, HEIC detection, amount prefill + parsing, multipart field names), `KleidiDateFormatter` (`DD/MM/YYYY`), `PhoneNumber` (E.164). |
+| `api/` | Pure Kotlin: `ApiClient` (tenant headers, Bearer, single-flight refresh, errors, events), serializable models (`Tenant`, `TenantConfig`, `TenantLease`, `TenantRent` / `TenantRentMonth`, `TenantWireDeclaration`), `endpoints/TenantEndpoints.kt`, `endpoints/RentEndpoints.kt` (rent months, declarations, multipart `declareWire`, proof download), `Multipart.kt`. OkHttp + kotlinx.serialization. |
 | `ui/` | Compose kit: `TenantTheme` (white ground, ink `#15202B`, accent `#1E5AA8`), cards, dashed card, pills, buttons, banners, `Loadable`. No strings. |
-| `app/.../shell/` | `AppModel` (session lifecycle), `ServerEnvironment`, Keystore `AndroidTokenStore`, `LanguagePreferences` (DataStore + `setApplicationLocales`), `ApiErrorText` (error → copy), `RootScreen`, `MainScaffold` (bottom tabs). |
-| `app/.../features/` | `onboarding/LanguageScreen`, `auth/` (`AuthFlow`, `PhoneScreen`, `CodeScreen`), `home/` (`HomeScreen`, `LeaseLabels`), `profile/ProfileScreen`, `placeholder/ComingSoonScreen`. |
+| `app/.../shell/` | `AppModel` (session lifecycle), `ServerEnvironment`, Keystore `AndroidTokenStore`, `LanguagePreferences` (DataStore + `setApplicationLocales`), `ApiErrorText` (error → copy), `RootScreen`, `MainScaffold` (bottom tabs + the Declare screen pushed over them). |
+| `app/.../features/` | `onboarding/LanguageScreen`, `auth/` (`AuthFlow`, `PhoneScreen`, `CodeScreen`), `home/` (`HomeScreen`, `LeaseLabels`), `payments/` (`PaymentsScreen`, `RentMonthRow`, `DeclareWireScreen`, `ProofPicker`, `ProofViewer`, `RentLabels`), `profile/ProfileScreen`, `placeholder/ComingSoonScreen` (Issues). |
 | `app/src/main/res/values{,-el}/strings.xml` | Every user-facing string, English and Greek. |
 
 ## Getting started
@@ -66,6 +66,17 @@ The server treats the app as a *native tenant client* (server repo: `docs/tenant
 - `GET /api/tenant/config` is checked at launch; a build below `android.minSupportedBuild`, or any
   `426`, shows the forced-update screen (with the Play Store link). **Bump `versionCode` on every Play
   upload.** `smsConfigured: false` disables the "Send code" button with a notice.
+- Rent (phase 2): `GET /api/tenant/leases/:id/rent` (the months, newest first, each with
+  `status` paid / declared / due / overdue / upcoming, `confirmedByWire`, the latest `declaration`
+  and `canDeclare`), `GET /api/tenant/leases/:id/wire-declarations` (the tenant's history) and
+  `POST /api/tenant/leases/:id/wire-declarations` — "I paid by bank transfer" as
+  `multipart/form-data` with the text parts `periods` (JSON array of `YYYY-MM`), `declaredAmount`,
+  `transferDate` (`YYYY-MM-DD`), `reference?` **before** the `proof` file (PDF / JPEG / PNG / WebP,
+  max 15 MB; 5 declarations per 10 minutes). Camera shots and any photo that is not PNG / WebP
+  (HEIC included) are re-encoded as JPEG 85 with the longest side at most 2000 px, upright per
+  EXIF and without metadata. `GET /api/tenant/wire-declarations/:id/proof` returns the file bytes
+  — "View proof" downloads them with the Bearer token and shows an image, or renders a PDF with
+  `PdfRenderer`. Statuses are open `StringValue`s: a new server value never breaks decoding.
 - Language: chosen on the first screen (stored in DataStore, applied in-app with
   `AppCompatDelegate.setApplicationLocales`). After sign-in, if the tenant record's `language` differs
   from the phone's choice, the app sends `PATCH /api/tenant/me { language }` once; Profile → Language
@@ -73,8 +84,15 @@ The server treats the app as a *native tenant client* (server repo: `docs/tenant
 
 ## Status
 
-Phase 1 — foundation: language choice, sign-in, Home ("My lease" with the rent card, disabled
-"I paid by bank transfer", "Pay online — coming soon", lease details, "Report an issue"), Profile
-(language, sign out, sign out everywhere), forced update. Payments and Issues tabs are placeholders.
-Light theme only (the approved mock-up). Compiled and unit-tested; **not yet run on a device or
-emulator** (the dev container has none).
+Phase 1 — foundation: language choice, sign-in, Home ("My lease" with the rent card, "Pay online —
+coming soon", lease details, "Report an issue"), Profile (language, sign out, sign out
+everywhere), forced update.
+
+Phase 2 — rent months + "I paid by bank transfer": the Home rent card shows the status pill of
+the newest month ("Wire confirmed by property owner" for a month settled through a declaration)
+and enables "I paid by bank transfer" when a month can be declared; the Payments tab lists the
+months ("Rent") and the tenant's declarations ("Your declarations", with "View proof"); the
+Declare screen (month multi-select, amount prefilled from the picked months, transfer date up to
+today, optional reference, proof from camera / gallery / files) sends the multipart declaration.
+The Issues tab is still a placeholder. Light theme only (the approved mock-up). Compiled and
+unit-tested; **not yet run on a device or emulator** (the dev container has none).

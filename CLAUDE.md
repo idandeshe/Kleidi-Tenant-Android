@@ -19,10 +19,15 @@ API (server repo: `/workspace`, contract in its `docs/tenant-app.md`). Read `REA
   verbatim (`shell/ApiErrorText.kt` maps errors to copy). The language is the tenant's choice
   (`LanguagePreferences`, applied with `AppCompatDelegate.setApplicationLocales`), not the device's.
 - **API contract:** models mirror `server/types/tenantAuth.types.ts`, `tenantPortal.types.ts`,
-  `tenants.types.ts`; declare only the fields the app shows; enum-like values are
+  `tenants.types.ts`, `wireDeclarations.types.ts` (tenant view only); declare only the fields the app shows; enum-like values are
   `@JvmInline value class X(override val raw: String) : StringValue` in `:core` (never Kotlin enums —
   a new server value must not break decoding); unknown JSON keys are ignored. The tenant lease shape
   is deliberately narrow: a field is added on the server first, on purpose.
+- **Uploads:** `multipart/form-data` through `MultipartForm` (`:api`) — text parts first, the file
+  last (the server reads the fields before the file). Photos are re-encoded as JPEG in `:app`
+  (`features/payments/ProofPicker.kt`), never sent as HEIC. Pickers use the Activity Result APIs
+  (no runtime permissions; no `CAMERA` permission in the manifest). Downloads that need the Bearer
+  token (a proof) go through `ApiClient.sendData`, never a bare URL.
 - **Headers:** every request sends `x-client: tenant-android` and `x-client-build: <versionCode>`;
   the session is `Authorization: Bearer` with the refresh token in the body. No cookies, no CSRF.
 - **Dates / money:** `KleidiDateFormatter` (`DD/MM/YYYY`), `LeaseFormatting.money` — never

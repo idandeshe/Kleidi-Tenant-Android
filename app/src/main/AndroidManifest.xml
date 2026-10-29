@@ -26,6 +26,19 @@
             </intent-filter>
         </activity>
 
+        <!-- Camera shots for the proof of a bank transfer are written to the cache and shared with the
+             camera app; downloaded proofs (PDF) are rendered from the cache too. No CAMERA permission is
+             declared, so TakePicture needs no runtime permission; the photo picker needs none either. -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.files"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
         <!-- Keeps the chosen in-app language across restarts on Android 12 and below
              (AppCompatDelegate.setApplicationLocales); Android 13+ stores it in the system. -->
         <service

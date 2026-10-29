@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Γλώσσα (πρώτη οθόνη) -->
     <string name="language_title">Επιλέξτε γλώσσα</string>
     <string name="language_subtitle">Μπορείτε να την αλλάξετε όποτε θέλετε από το Προφίλ.</string>
@@ -60,7 +60,7 @@
     <string name="home_rent_for">Ενοίκιο %1$s</string>
     <string name="home_due_pill">Πληρωτέο έως %1$s του μήνα</string>
     <string name="home_paid_transfer">Πλήρωσα με τραπεζικό έμβασμα</string>
-    <string name="home_paid_transfer_soon">Σύντομα διαθέσιμο — θα μπορείτε να μας ενημερώνετε όταν έχετε πληρώσει.</string>
+    <string name="home_paid_transfer_soon">Πληρώσατε ήδη; Δηλώστε το έμβασμα και επισυνάψτε το αποδεικτικό της τράπεζας.</string>
     <string name="home_pay_online">Πληρωμή online</string>
     <string name="home_coming_soon">Σύντομα</string>
     <string name="home_pay_online_note">Πληρωμές με κάρτα ή μέσω τράπεζας απευθείας από την εφαρμογή.</string>
@@ -111,7 +111,6 @@
 
     <!-- Προσωρινές οθόνες -->
     <string name="placeholder_title">Έρχεται σε επόμενη έκδοση</string>
-    <string name="placeholder_payments_message">Εδώ θα βλέπετε τις πληρωμές του ενοικίου και τις αποδείξεις σας.</string>
     <string name="placeholder_issues_message">Εδώ θα δηλώνετε και θα παρακολουθείτε βλάβες.</string>
 
     <!-- Προφίλ -->
@@ -136,4 +135,63 @@
     <string name="common_retry">Δοκιμάστε ξανά</string>
     <string name="common_error_title">Δεν ήταν δυνατή η φόρτωση</string>
     <string name="common_cancel">Άκυρο</string>
+
+    <!-- Μήνες ενοικίου + δηλώσεις (καρτέλα Πληρωμές, κάρτα ενοικίου στην Αρχική) -->
+    <string name="rent_title">Ενοίκιο</string>
+    <string name="rent_status_paid">Πληρωμένο</string>
+    <string name="rent_status_declared">Δηλώθηκε έμβασμα, αναμένεται επιβεβαίωση</string>
+    <string name="rent_status_due">Προς πληρωμή</string>
+    <string name="rent_status_overdue">Εκπρόθεσμο</string>
+    <string name="rent_status_upcoming">Επερχόμενο</string>
+    <string name="rent_confirmed_by_wire">Το έμβασμα επιβεβαιώθηκε από τον ιδιοκτήτη</string>
+    <string name="rent_rejected">Το έμβασμα δεν επιβεβαιώθηκε — επικοινωνήστε με τη διαχείριση</string>
+    <string name="rent_rejected_note">Σημείωση διαχείρισης: %1$s</string>
+    <string name="rent_declared_on">Δηλώθηκε %1$s</string>
+    <string name="rent_paid_on">Πληρώθηκε %1$s</string>
+    <string name="rent_due_on">Έως %1$s</string>
+    <string name="rent_declare">Πλήρωσα με τραπεζικό έμβασμα</string>
+    <string name="rent_nothing_to_declare">Δεν υπάρχει κάτι να δηλώσετε — όλοι οι μήνες είναι πληρωμένοι ή ήδη δηλωμένοι.</string>
+    <string name="rent_history">Οι δηλώσεις σας</string>
+    <string name="rent_no_history">Δεν υπάρχουν δηλώσεις εμβασμάτων ακόμα.</string>
+    <string name="rent_declaration_status_pending">Αναμένεται επιβεβαίωση</string>
+    <string name="rent_declaration_status_confirmed">Επιβεβαιώθηκε από τον ιδιοκτήτη</string>
+    <string name="rent_declaration_status_rejected">Δεν επιβεβαιώθηκε</string>
+    <string name="rent_view_proof">Προβολή αποδεικτικού</string>
+
+    <!-- «Πλήρωσα με τραπεζικό έμβασμα» -->
+    <string name="wire_title">Δήλωση τραπεζικού εμβάσματος</string>
+    <string name="wire_intro">Ενημερώστε τον διαχειριστή ποιο ενοίκιο πληρώσατε και επισυνάψτε το αποδεικτικό της τράπεζας. Θα το ελέγξει και θα το επιβεβαιώσει.</string>
+    <string name="wire_months_label">Ποιους μήνες πληρώσατε;</string>
+    <string name="wire_months_hint">Επιλέξτε έναν ή περισσότερους μήνες που καλύπτει αυτό το έμβασμα.</string>
+    <string name="wire_amount_label">Ποσό εμβάσματος</string>
+    <string name="wire_amount_hint">Ενοίκιο για τους επιλεγμένους μήνες: %1$s</string>
+    <string name="wire_date_label">Ημερομηνία εμβάσματος</string>
+    <string name="wire_reference_label">Αιτιολογία (προαιρετικά)</string>
+    <string name="wire_reference_placeholder">π.χ. Ενοίκιο Οκτωβρίου — Παπαδόπουλος</string>
+    <string name="wire_proof_label">Αποδεικτικό εμβάσματος</string>
+    <string name="wire_proof_hint">Στιγμιότυπο, φωτογραφία ή PDF της επιβεβαίωσης της τράπεζας — JPG, PNG, WebP ή PDF, έως 15 MB.</string>
+    <string name="wire_proof_pick">Επιλογή αρχείου</string>
+    <string name="wire_proof_change">Αλλαγή αρχείου</string>
+    <string name="wire_proof_heic" tools:ignore="UnusedResources">Οι φωτογραφίες HEIC δεν υποστηρίζονται εδώ. Εξάγετε τη φωτογραφία ως JPG ή χρησιμοποιήστε την εφαρμογή Kleidi Tenant στο κινητό σας.</string>
+    <string name="wire_proof_too_large">Το αρχείο ξεπερνά τα 15 MB.</string>
+    <string name="wire_proof_required">Επισυνάψτε το αποδεικτικό της τράπεζας.</string>
+    <string name="wire_months_required">Επιλέξτε τουλάχιστον έναν μήνα.</string>
+    <string name="wire_amount_required">Συμπληρώστε το ποσό που μεταφέρατε.</string>
+    <string name="wire_date_required">Συμπληρώστε την ημερομηνία του εμβάσματος.</string>
+    <string name="wire_submit">Αποστολή δήλωσης</string>
+    <string name="wire_submitting">Αποστολή…</string>
+    <string name="wire_done_title">Το έμβασμα δηλώθηκε</string>
+    <string name="wire_done_body">Ευχαριστούμε. Ο διαχειριστής θα ελέγξει το έμβασμα και θα το επιβεβαιώσει — θα δείτε «Το έμβασμα επιβεβαιώθηκε από τον ιδιοκτήτη» στον μήνα.</string>
+    <string name="wire_back_home">Πίσω στην αρχική</string>
+    <string name="wire_cancel">Άκυρο</string>
+
+    <!-- Επιλογή / προβολή αποδεικτικού (μόνο Android: οι πηγές ενός αρχείου και τι μπορεί να πάει στραβά) -->
+    <string name="proof_source_camera">Κάμερα</string>
+    <string name="proof_source_gallery">Συλλογή</string>
+    <string name="proof_source_files">Αρχεία</string>
+    <string name="proof_read_failed">Δεν ήταν δυνατή η ανάγνωση του αρχείου. Επιλέξτε άλλο.</string>
+    <string name="proof_file_size_kb">%1$s · %2$d KB</string>
+    <string name="error_wire_conflict">Ο μήνας αυτός είναι ήδη πληρωμένος ή ήδη δηλωμένος. Ανανεώστε και δοκιμάστε ξανά.</string>
+    <string name="common_close">Κλείσιμο</string>
+    <string name="common_ok">ΟΚ</string>
 </resources>

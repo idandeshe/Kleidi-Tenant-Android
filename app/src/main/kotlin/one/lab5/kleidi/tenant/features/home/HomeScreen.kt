@@ -1,5 +1,6 @@
-// "My lease": the rent card for this month, the (not yet available) payment actions, the lease
-// details grid and the "Report an issue" row.
+// "My lease": the rent card for this month (with the real status of the newest rent month),
+// "I paid by bank transfer" / "Pay online — coming soon", the lease details grid and the
+// "Report an issue" row.
 
 package one.lab5.kleidi.tenant.features.home
 
@@ -29,6 +30,7 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -43,13 +45,17 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import one.lab5.kleidi.tenant.R
 import one.lab5.kleidi.tenant.api.endpoints.leases
+import one.lab5.kleidi.tenant.api.endpoints.rent
 import one.lab5.kleidi.tenant.api.models.Tenant
 import one.lab5.kleidi.tenant.api.models.TenantLease
+import one.lab5.kleidi.tenant.api.models.TenantRent
 import one.lab5.kleidi.tenant.core.KleidiDateFormatter
 import one.lab5.kleidi.tenant.core.LeaseFormatting
+import one.lab5.kleidi.tenant.features.payments.PaymentActions
+import one.lab5.kleidi.tenant.features.payments.RentLabels
+import one.lab5.kleidi.tenant.features.payments.statusLabel
 import one.lab5.kleidi.tenant.shell.LocalAppModel
 import one.lab5.kleidi.tenant.shell.errorMessageRes
-import one.lab5.kleidi.tenant.ui.DashedCard
 import one.lab5.kleidi.tenant.ui.DetailCell
 import one.lab5.kleidi.tenant.ui.EmptyState
 import one.lab5.kleidi.tenant.ui.InfoNote
@@ -57,7 +63,6 @@ import one.lab5.kleidi.tenant.ui.Loadable
 import one.lab5.kleidi.tenant.ui.LoadableView
 import one.lab5.kleidi.tenant.ui.Pill
 import one.lab5.kleidi.tenant.ui.PillTone
-import one.lab5.kleidi.tenant.ui.PrimaryButton
 import one.lab5.kleidi.tenant.ui.SectionTitle
 import one.lab5.kleidi.tenant.ui.TenantCard
 import one.lab5.kleidi.tenant.ui.TenantTheme
@@ -65,16 +70,22 @@ import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(tenant: Tenant, onReportIssue: () -> Unit) {
+fun HomeScreen(tenant: Tenant, onReportIssue: () -> Unit, onDeclare: (leaseId: String) -> Unit) {
     val app = LocalAppModel.current
     val scope = rememberCoroutineScope()
     val resources = LocalResources.current
     var state by remember { mutableStateOf<Loadable<List<TenantLease>>>(Loadable.Loading) }
+    // The rent months per lease (the pill and the declare button); best effort — the lease shows without them.
+    val rents = remember { mutableStateMapOf<String, TenantRent>() }
     var refreshing by remember { mutableStateOf(false) }
     var selectedId by rememberSaveable { mutableStateOf<String?>(null) }
 
+    suspend fun loadRent(leaseId: String) {
+        runCatching { app.client.rent(leaseId) }.getOrNull()?.let { rents[leaseId] = it }
+    }
     suspend fun load() {
         state = Loadable.run { app.client.leases() }
+        rents.keys.toList().forEach { loadRent(it) }
     }
     LaunchedEffect(Unit) { if (state == Loadable.Loading) load() }
 
@@ -109,10 +120,12 @@ fun HomeScreen(tenant: Tenant, onReportIssue: () -> Unit) {
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
                     Column(Modifier.widthIn(max = 560.dp).fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                        LaunchedEffect(lease.id) { if (lease.id !in rents) loadRent(lease.id) }
+                        val rent = rents[lease.id]
                         Header(tenant)
                         if (leases.size > 1) LeaseChooser(leases, lease, onSelect = { selectedId = it.id })
-                        RentCard(lease)
-                        PaymentActions()
+                        RentCard(lease, rent)
+                        PaymentActions(rent, onDeclare = { onDeclare(lease.id) }, showHint = true)
                         LeaseDetails(lease)
                         ReportIssueRow(onReportIssue)
                         Spacer(Modifier.height(8.dp))
@@ -146,9 +159,12 @@ private fun LeaseChooser(leases: List<TenantLease>, selected: TenantLease, onSel
     }
 }
 
-/** "€ 800 · Rent for October 2026", with the due-day pill. */
+/**
+ * "€ 800 · Rent for October 2026", with the status pill of the newest rent month ("Paid",
+ * "Wire confirmed by property owner", "Due"…) — or the due-day pill until the months are known.
+ */
 @Composable
-private fun RentCard(lease: TenantLease) {
+private fun RentCard(lease: TenantLease, rent: TenantRent?) {
     val language = LocalAppModel.current.language
     val month = LeaseFormatting.rentMonth(LocalDate.now())
     val c = TenantTheme.colors
@@ -160,8 +176,13 @@ private fun RentCard(lease: TenantLease) {
                 color = c.ink,
             )
             Spacer(Modifier.weight(1f))
-            lease.paymentDayOfMonth?.let { day ->
-                Pill(stringResource(R.string.home_due_pill, LeaseFormatting.dayOfMonthLabel(day, language)))
+            val thisMonth = rent?.newestMonth
+            if (thisMonth != null) {
+                Pill(thisMonth.statusLabel(), tone = RentLabels.monthTone(thisMonth.monthStatus), modifier = Modifier.widthIn(max = 180.dp), singleLine = false)
+            } else {
+                lease.paymentDayOfMonth?.let { day ->
+                    Pill(stringResource(R.string.home_due_pill, LeaseFormatting.dayOfMonthLabel(day, language)))
+                }
             }
         }
         Spacer(Modifier.height(4.dp))
@@ -183,31 +204,6 @@ private fun RentCard(lease: TenantLease) {
         if (lease.isPastEnd) {
             Spacer(Modifier.height(12.dp))
             InfoNote(stringResource(R.string.home_past_end), tone = PillTone.Warning)
-        }
-    }
-}
-
-/** The bank-transfer declaration (next phase, disabled) and the "Pay online" placeholder. */
-@Composable
-private fun PaymentActions() {
-    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            PrimaryButton(stringResource(R.string.home_paid_transfer), onClick = {}, enabled = false)
-            Text(
-                stringResource(R.string.home_paid_transfer_soon),
-                style = MaterialTheme.typography.bodySmall,
-                color = TenantTheme.colors.secondaryText,
-                modifier = Modifier.padding(horizontal = 4.dp),
-            )
-        }
-        DashedCard {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(stringResource(R.string.home_pay_online), style = MaterialTheme.typography.titleMedium, color = TenantTheme.colors.ink)
-                Spacer(Modifier.width(10.dp))
-                Pill(stringResource(R.string.home_coming_soon), tone = PillTone.Neutral, uppercase = true)
-            }
-            Spacer(Modifier.height(4.dp))
-            Text(stringResource(R.string.home_pay_online_note), style = MaterialTheme.typography.bodyMedium, color = TenantTheme.colors.secondaryText)
         }
     }
 }
