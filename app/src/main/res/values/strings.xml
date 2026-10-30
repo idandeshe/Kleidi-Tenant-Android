@@ -55,6 +55,10 @@
     <string name="tab_payments">Payments</string>
     <string name="tab_issues">Issues</string>
     <string name="tab_profile">Profile</string>
+    <plurals name="tab_issues_unread">
+        <item quantity="one">%d new reply from your property manager</item>
+        <item quantity="other">%d new replies from your property manager</item>
+    </plurals>
 
     <!-- Home -->
     <string name="home_title">My lease</string>

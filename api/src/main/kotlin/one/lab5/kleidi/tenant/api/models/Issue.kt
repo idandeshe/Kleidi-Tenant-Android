@@ -96,3 +96,6 @@ data class TenantIssueDetail(
 
 @Serializable
 data class TenantIssuesResponse(val data: List<TenantIssue>)
+
+/** Issues with a staff reply the tenant has not opened yet — the count on the Issues tab. */
+val List<TenantIssue>.unreadCount: Int get() = count { it.tenantUnread }

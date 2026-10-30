@@ -2,7 +2,9 @@ package one.lab5.kleidi.tenant.api
 
 import one.lab5.kleidi.tenant.api.models.TenantIssueDetail
 import one.lab5.kleidi.tenant.api.models.TenantIssueMessage
+import one.lab5.kleidi.tenant.api.models.TenantIssue
 import one.lab5.kleidi.tenant.api.models.TenantIssuesResponse
+import one.lab5.kleidi.tenant.api.models.unreadCount
 import one.lab5.kleidi.tenant.core.IssueAuthor
 import one.lab5.kleidi.tenant.core.IssueCategory
 import one.lab5.kleidi.tenant.core.IssueMessageKind
@@ -45,6 +47,13 @@ class IssueDecodingTest {
         assertFalse(lock.canReply)
         assertEquals(Instant.parse("2026-09-12T09:00:00Z"), lock.resolvedAt)
         assertEquals(IssueCategory.DoorsLocks, lock.issueCategory)
+    }
+
+    @Test
+    fun unreadCountIsTheNumberOfIssuesWithAnUnopenedReply() {
+        val issues = KleidiJson.decodeFromString(TenantIssuesResponse.serializer(), ISSUES_JSON).data
+        assertEquals(1, issues.unreadCount)
+        assertEquals(0, emptyList<TenantIssue>().unreadCount)
     }
 
     @Test

@@ -8,6 +8,8 @@ import androidx.compose.material.icons.outlined.Build
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Payments
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -16,13 +18,20 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
+import kotlinx.coroutines.launch
 import one.lab5.kleidi.tenant.R
 import one.lab5.kleidi.tenant.api.models.Tenant
 import one.lab5.kleidi.tenant.features.home.HomeScreen
@@ -46,15 +55,21 @@ enum class Tab(val labelRes: Int, val icon: ImageVector) {
  * The signed-in app: the four tabs, plus the screens pushed over them (they replace the tab
  * content and bottom bar while open, as on the web): "Declare a bank transfer" from Home or
  * Payments, "Report an issue" from Home or Issues, and an issue's thread from Issues (or right
- * after reporting).
+ * after reporting). The Issues tab shows how many threads have a reply from the property manager
+ * the tenant has not opened yet — read when the app starts or comes back to the foreground, and
+ * kept current by the Issues list while it is used.
  */
 @Composable
 fun MainScaffold(tenant: Tenant) {
+    val app = LocalAppModel.current
+    val scope = rememberCoroutineScope()
     var selected by rememberSaveable { mutableStateOf(Tab.Home) }
     var declaringLeaseId by rememberSaveable { mutableStateOf<String?>(null) }
     var reportingLeaseId by rememberSaveable { mutableStateOf<String?>(null) }
     var openIssueId by rememberSaveable { mutableStateOf<String?>(null) }
     val colors = TenantTheme.colors
+    // ON_RESUME also fires when this enters composition, so launch and foreground share one path.
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { scope.launch { app.refreshUnreadIssues() } }
 
     reportingLeaseId?.let { leaseId ->
         ReportIssueScreen(
@@ -90,7 +105,7 @@ fun MainScaffold(tenant: Tenant) {
                     NavigationBarItem(
                         selected = selected == tab,
                         onClick = { selected = tab },
-                        icon = { Icon(tab.icon, contentDescription = null) },
+                        icon = { TabIcon(tab, unread = if (tab == Tab.Issues) app.unreadIssueCount else 0) },
                         label = { Text(stringResource(tab.labelRes)) },
                         colors = NavigationBarItemDefaults.colors(
                             selectedIconColor = colors.accent,
@@ -112,5 +127,29 @@ fun MainScaffold(tenant: Tenant) {
                 Tab.Profile -> ProfileScreen(tenant)
             }
         }
+    }
+}
+
+/** The tab's icon; [unread] > 0 puts the count in a badge on it (the Issues tab's unread replies). */
+@Composable
+private fun TabIcon(tab: Tab, unread: Int) {
+    if (unread <= 0) {
+        Icon(tab.icon, contentDescription = null)
+        return
+    }
+    val colors = TenantTheme.colors
+    val description = pluralStringResource(R.plurals.tab_issues_unread, unread, unread)
+    BadgedBox(
+        badge = {
+            Badge(
+                containerColor = colors.error,
+                contentColor = colors.ground,
+                modifier = Modifier.semantics { contentDescription = description },
+            ) {
+                Text(if (unread > 99) "99+" else unread.toString())
+            }
+        },
+    ) {
+        Icon(tab.icon, contentDescription = null)
     }
 }

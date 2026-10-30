@@ -53,6 +53,10 @@
     <string name="tab_payments">Πληρωμές</string>
     <string name="tab_issues">Βλάβες</string>
     <string name="tab_profile">Προφίλ</string>
+    <plurals name="tab_issues_unread">
+        <item quantity="one">%d νέα απάντηση από τον διαχειριστή</item>
+        <item quantity="other">%d νέες απαντήσεις από τον διαχειριστή</item>
+    </plurals>
 
     <!-- Αρχική -->
     <string name="home_title">Η μίσθωσή μου</string>

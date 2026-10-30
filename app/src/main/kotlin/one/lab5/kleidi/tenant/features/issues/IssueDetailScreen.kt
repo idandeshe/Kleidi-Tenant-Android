@@ -64,6 +64,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import one.lab5.kleidi.tenant.R
 import one.lab5.kleidi.tenant.api.endpoints.issue
@@ -87,11 +92,19 @@ import one.lab5.kleidi.tenant.ui.TenantTheme
 private val BubbleMaxWidth = 300.dp
 private val ThumbSize = 64.dp
 
-/** [onReportAgain] is the "Report it again" of a resolved / closed issue (same lease). */
+/** How often an open thread re-reads itself while on screen (the web and iOS apps use the same). */
+private const val THREAD_POLL_MS = 5_000L
+
+/**
+ * [onReportAgain] is the "Report it again" of a resolved / closed issue (same lease). While the screen
+ * is resumed the thread re-reads itself every few seconds, so the property manager's replies and
+ * status changes appear on their own; a failed re-read changes nothing on screen.
+ */
 @Composable
 fun IssueDetailScreen(issueId: String, onBack: () -> Unit, onReportAgain: (leaseId: String) -> Unit) {
     val app = LocalAppModel.current
     val resources = LocalResources.current
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
     val c = TenantTheme.colors
     var state by remember { mutableStateOf<Loadable<TenantIssueDetail>>(Loadable.Loading) }
     val cache = rememberIssuePhotoCache(issueId)
@@ -100,7 +113,20 @@ fun IssueDetailScreen(issueId: String, onBack: () -> Unit, onReportAgain: (lease
     suspend fun load() {
         state = Loadable.run { app.client.issue(issueId) }
     }
+    suspend fun poll() {
+        runCatching { app.client.issue(issueId) }.onSuccess { state = Loadable.Loaded(it) }
+    }
     LaunchedEffect(issueId) { if (state == Loadable.Loading) load() }
+    // Paused while the app is in the background; the first pass after a resume re-reads at once
+    // (the `Loaded` guard only skips the pass that overlaps the initial load).
+    LaunchedEffect(issueId) {
+        lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            while (isActive) {
+                if (state is Loadable.Loaded) poll()
+                delay(THREAD_POLL_MS)
+            }
+        }
+    }
     BackHandler(onBack = onBack)
 
     val detail = state.valueOrNull

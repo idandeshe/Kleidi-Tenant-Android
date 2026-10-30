@@ -89,7 +89,7 @@ fun IssuesScreen(onReport: (leaseId: String) -> Unit, onOpen: (issueId: String) 
     suspend fun load() {
         state = Loadable.run {
             val lease = LeaseFormatting.primaryLease(app.client.leases()) { it.leaseStatus }
-            IssuesData(lease, app.client.issues())
+            IssuesData(lease, app.client.issues().also(app::issuesDidLoad))
         }
     }
     LaunchedEffect(Unit) { if (state == Loadable.Loading) load() }

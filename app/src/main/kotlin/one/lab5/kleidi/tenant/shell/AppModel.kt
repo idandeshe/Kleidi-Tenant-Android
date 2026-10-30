@@ -13,15 +13,19 @@ import one.lab5.kleidi.tenant.api.ApiClient
 import one.lab5.kleidi.tenant.api.ApiError
 import one.lab5.kleidi.tenant.api.ApiEvent
 import one.lab5.kleidi.tenant.api.TenantErrorCode
+import one.lab5.kleidi.tenant.api.endpoints.issues
 import one.lab5.kleidi.tenant.api.endpoints.updateLanguage
 import one.lab5.kleidi.tenant.api.models.Tenant
 import one.lab5.kleidi.tenant.api.models.TenantConfig
+import one.lab5.kleidi.tenant.api.models.TenantIssue
+import one.lab5.kleidi.tenant.api.models.unreadCount
 import one.lab5.kleidi.tenant.core.AppLanguage
 
 /**
  * Owns the API client and the session lifecycle: the language choice, launch checks
  * (config → stored session → `/tenant/auth/session`), sign-in, sign-out, forced update,
- * and reacting to [ApiEvent]s from any screen. The counterpart of the tenant iOS `AppModel`.
+ * reacting to [ApiEvent]s from any screen, and the Issues tab badge (unread replies from the
+ * property manager). The counterpart of the tenant iOS `AppModel` + `AppNavigation`.
  */
 class AppModel(application: Application) : AndroidViewModel(application) {
     /** Why the sign-in screen is showing a notice. */
@@ -53,6 +57,13 @@ class AppModel(application: Application) : AndroidViewModel(application) {
 
     /** The last `GET /tenant/config`; null when the server could not be reached at launch. */
     var config: TenantConfig? by mutableStateOf(null)
+        private set
+
+    /**
+     * Issues with a reply the tenant has not opened — the number on the Issues tab (0 hides it).
+     * Set from whichever screen last loaded the list and by [refreshUnreadIssues] at launch / on resume.
+     */
+    var unreadIssueCount: Int by mutableStateOf(0)
         private set
 
     private val preferences = LanguagePreferences(application)
@@ -143,7 +154,7 @@ class AppModel(application: Application) : AndroidViewModel(application) {
 
     suspend fun signOut() {
         client.logout()
-        phase = Phase.SignedOut(null)
+        endSession(Phase.SignedOut(null))
     }
 
     /** Revokes every session of this tenant (other phones and the web included). */
@@ -151,8 +162,25 @@ class AppModel(application: Application) : AndroidViewModel(application) {
         try {
             client.logoutAll()
         } finally {
-            phase = Phase.SignedOut(null)
+            endSession(Phase.SignedOut(null))
         }
+    }
+
+    /** Leaves the signed-in state; the badge belonged to the tenant who just left. */
+    private fun endSession(next: Phase) {
+        unreadIssueCount = 0
+        phase = next
+    }
+
+    /** The issues list was (re)loaded: the tab badge follows it. */
+    fun issuesDidLoad(issues: List<TenantIssue>) {
+        unreadIssueCount = issues.unreadCount
+    }
+
+    /** Re-reads the tenant's issues for the badge. Best effort: a failure leaves the count as it was. */
+    suspend fun refreshUnreadIssues() {
+        if (phase !is Phase.SignedIn) return
+        runCatching { client.issues() }.onSuccess { issuesDidLoad(it) }
     }
 
     /** Re-reads the tenant from the server (after a profile change). */
@@ -186,7 +214,7 @@ class AppModel(application: Application) : AndroidViewModel(application) {
         when (event) {
             is ApiEvent.SessionEnded -> {
                 val notice = if (event.reason == TenantErrorCode.NOT_A_TENANT) Notice.NoLongerTenant else Notice.SessionEnded
-                if (phase is Phase.SignedIn) phase = Phase.SignedOut(notice)
+                if (phase is Phase.SignedIn) endSession(Phase.SignedOut(notice))
             }
             is ApiEvent.UpdateRequired -> phase = Phase.UpdateRequired(config?.android?.playStoreUrl)
         }
