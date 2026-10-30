@@ -1,5 +1,5 @@
 // Payments (web `PaymentsPage`): "I paid by bank transfer" (or nothing to declare) with the dashed
-// "Pay online — COMING SOON" row, the "Rent" card listing the months, and "Your declarations".
+// "Pay online — COMING SOON" row and the "Rent" card listing the months, each with its declaration.
 
 package one.lab5.kleidi.tenant.features.payments
 
@@ -34,22 +34,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import one.lab5.kleidi.tenant.R
 import one.lab5.kleidi.tenant.api.endpoints.leases
 import one.lab5.kleidi.tenant.api.endpoints.rent
-import one.lab5.kleidi.tenant.api.endpoints.wireDeclarations
 import one.lab5.kleidi.tenant.api.models.TenantLease
 import one.lab5.kleidi.tenant.api.models.TenantRent
-import one.lab5.kleidi.tenant.api.models.TenantWireDeclaration
 import one.lab5.kleidi.tenant.core.LeaseFormatting
 import one.lab5.kleidi.tenant.shell.LocalAppModel
 import one.lab5.kleidi.tenant.shell.errorMessageRes
 import one.lab5.kleidi.tenant.ui.DashedCard
 import one.lab5.kleidi.tenant.ui.EmptyState
-import one.lab5.kleidi.tenant.ui.ErrorBanner
 import one.lab5.kleidi.tenant.ui.Loadable
 import one.lab5.kleidi.tenant.ui.LoadableView
 import one.lab5.kleidi.tenant.ui.Pill
@@ -60,7 +55,7 @@ import one.lab5.kleidi.tenant.ui.TenantCard
 import one.lab5.kleidi.tenant.ui.TenantTheme
 
 /** What the screen shows for the lease it is about; null lease = "No lease yet". */
-private class PaymentsData(val lease: TenantLease?, val rent: TenantRent?, val history: Loadable<List<TenantWireDeclaration>>)
+private class PaymentsData(val lease: TenantLease?, val rent: TenantRent?)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -75,13 +70,8 @@ fun PaymentsScreen(onDeclare: (leaseId: String) -> Unit) {
     suspend fun load() {
         state = Loadable.run {
             val lease = LeaseFormatting.primaryLease(app.client.leases()) { it.leaseStatus }
-                ?: return@run PaymentsData(null, null, Loadable.Loaded(emptyList()))
-            coroutineScope {
-                val rent = async { app.client.rent(lease.id) }
-                // The history is secondary: its failure shows inside its card, not instead of the screen.
-                val history = async { Loadable.run { app.client.wireDeclarations(lease.id) } }
-                PaymentsData(lease, rent.await(), history.await())
-            }
+                ?: return@run PaymentsData(null, null)
+            PaymentsData(lease, app.client.rent(lease.id))
         }
     }
     LaunchedEffect(Unit) { if (state == Loadable.Loading) load() }
@@ -120,8 +110,7 @@ fun PaymentsScreen(onDeclare: (leaseId: String) -> Unit) {
                     Column(Modifier.widthIn(max = 560.dp).fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(16.dp)) {
                         Text(stringResource(R.string.tab_payments), style = MaterialTheme.typography.headlineMedium, color = TenantTheme.colors.ink)
                         TenantCard { PaymentActions(rent, onDeclare = { onDeclare(lease.id) }, showHint = false) }
-                        RentCard(rent)
-                        HistoryCard(data.history, onViewProof = { proofOf = it })
+                        RentCard(rent, onViewProof = { proofOf = it }, onDeclare = { onDeclare(lease.id) })
                         Spacer(Modifier.height(8.dp))
                     }
                 }
@@ -169,36 +158,14 @@ fun PaymentActions(rent: TenantRent?, onDeclare: () -> Unit, showHint: Boolean) 
     }
 }
 
-/** "Rent": every month of the lease, newest first. */
+/** "Rent": every month of the lease, newest first, each with its declaration ("View proof"). */
 @Composable
-private fun RentCard(rent: TenantRent) {
+private fun RentCard(rent: TenantRent, onViewProof: (declarationId: String) -> Unit, onDeclare: () -> Unit) {
     TenantCard(contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp)) {
         Text(stringResource(R.string.rent_title), style = MaterialTheme.typography.titleMedium, color = TenantTheme.colors.ink)
         rent.months.forEachIndexed { index, month ->
             if (index > 0) RowDivider(inset = false)
-            RentMonthRow(month, rent.currencyCode)
-        }
-    }
-}
-
-/** "Your declarations": the tenant's declarations on this lease, newest first. */
-@Composable
-private fun HistoryCard(history: Loadable<List<TenantWireDeclaration>>, onViewProof: (declarationId: String) -> Unit) {
-    val c = TenantTheme.colors
-    TenantCard(contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp)) {
-        Text(stringResource(R.string.rent_history), style = MaterialTheme.typography.titleMedium, color = c.ink)
-        when (history) {
-            Loadable.Loading -> Spacer(Modifier.height(8.dp))
-            is Loadable.Failed -> ErrorBanner(stringResource(errorMessageRes(history.error)), Modifier.padding(top = 8.dp))
-            is Loadable.Loaded -> {
-                if (history.value.isEmpty()) {
-                    Text(stringResource(R.string.rent_no_history), style = MaterialTheme.typography.bodySmall, color = c.secondaryText, modifier = Modifier.padding(top = 8.dp, bottom = 4.dp))
-                }
-                history.value.forEachIndexed { index, declaration ->
-                    if (index > 0) RowDivider(inset = false)
-                    DeclarationRow(declaration, onViewProof = { onViewProof(declaration.id) })
-                }
-            }
+            RentMonthRow(month, rent.currencyCode, onViewProof = onViewProof, onDeclare = onDeclare)
         }
     }
 }

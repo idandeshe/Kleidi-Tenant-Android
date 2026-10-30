@@ -151,11 +151,7 @@
     <string name="rent_due_on">Έως %1$s</string>
     <string name="rent_declare">Πλήρωσα με τραπεζικό έμβασμα</string>
     <string name="rent_nothing_to_declare">Δεν υπάρχει κάτι να δηλώσετε — όλοι οι μήνες είναι πληρωμένοι ή ήδη δηλωμένοι.</string>
-    <string name="rent_history">Οι δηλώσεις σας</string>
-    <string name="rent_no_history">Δεν υπάρχουν δηλώσεις εμβασμάτων ακόμα.</string>
-    <string name="rent_declaration_status_pending">Αναμένεται επιβεβαίωση</string>
-    <string name="rent_declaration_status_confirmed">Επιβεβαιώθηκε από τον ιδιοκτήτη</string>
-    <string name="rent_declaration_status_rejected">Δεν επιβεβαιώθηκε</string>
+    <string name="rent_declare_again">Δηλώστε ξανά</string>
     <string name="rent_view_proof">Προβολή αποδεικτικού</string>
 
     <!-- «Πλήρωσα με τραπεζικό έμβασμα» -->

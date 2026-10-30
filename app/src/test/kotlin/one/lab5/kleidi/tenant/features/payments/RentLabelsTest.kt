@@ -3,7 +3,6 @@ package one.lab5.kleidi.tenant.features.payments
 import one.lab5.kleidi.tenant.R
 import one.lab5.kleidi.tenant.api.ApiError
 import one.lab5.kleidi.tenant.core.RentMonthStatus
-import one.lab5.kleidi.tenant.core.WireDeclarationStatus
 import one.lab5.kleidi.tenant.ui.PillTone
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -17,9 +16,6 @@ class RentLabelsTest {
             assertTrue(it.raw, RentLabels.MONTH_STATUS.containsKey(it.labelKey))
         }
         assertEquals(R.string.rent_confirmed_by_wire, RentLabels.MONTH_STATUS[RentMonthStatus.labelKey(RentMonthStatus.Paid, confirmedByWire = true)])
-        listOf(WireDeclarationStatus.Pending, WireDeclarationStatus.Confirmed, WireDeclarationStatus.Rejected).forEach {
-            assertTrue(it.raw, RentLabels.DECLARATION_STATUS.containsKey(it.labelKey))
-        }
     }
 
     @Test
@@ -30,7 +26,6 @@ class RentLabelsTest {
         assertEquals(PillTone.Error, RentLabels.monthTone(RentMonthStatus.Overdue))
         assertEquals(PillTone.Neutral, RentLabels.monthTone(RentMonthStatus.Upcoming))
         assertEquals(PillTone.Neutral, RentLabels.monthTone(RentMonthStatus("waived")))
-        assertEquals(PillTone.Error, RentLabels.declarationTone(WireDeclarationStatus.Rejected))
     }
 
     @Test

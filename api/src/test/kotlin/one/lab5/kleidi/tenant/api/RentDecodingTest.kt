@@ -3,6 +3,7 @@ package one.lab5.kleidi.tenant.api
 import one.lab5.kleidi.tenant.api.models.TenantRent
 import one.lab5.kleidi.tenant.api.models.TenantWireDeclaration
 import one.lab5.kleidi.tenant.core.RentMonthStatus
+import one.lab5.kleidi.tenant.core.RentProofLine
 import one.lab5.kleidi.tenant.core.WireDeclarationStatus
 import java.time.Instant
 import kotlin.test.Test
@@ -28,17 +29,21 @@ class RentDecodingTest {
         assertTrue(october.canDeclare)
         assertNull(october.declaration)
         assertFalse(october.showsRejection)
+        assertEquals(RentProofLine.None, october.proofLine)
 
         val september = rent.months[1]
         assertEquals(RentMonthStatus.Declared, september.monthStatus)
         assertEquals(WireDeclarationStatus.Pending, september.declaration?.declarationStatus)
         assertEquals(Instant.parse("2026-09-03T00:00:00Z"), september.declaration?.transferDate)
+        assertEquals(Instant.parse("2026-09-04T08:30:00Z"), september.declaration?.declaredAt)
         assertFalse(september.canDeclare)
+        assertEquals(RentProofLine.ViewProof, september.proofLine)
 
         val august = rent.months[2]
         assertEquals(RentMonthStatus.Paid, august.monthStatus)
         assertTrue(august.confirmedByWire)
         assertEquals(Instant.parse("2026-08-04T00:00:00Z"), august.paidAt)
+        assertEquals(RentProofLine.DeclaredAndViewProof, august.proofLine)
 
         assertTrue(rent.canDeclare)
         assertEquals(listOf("2026-10"), rent.declarableMonths.map { it.period })
@@ -55,6 +60,7 @@ class RentDecodingTest {
         assertEquals(RentMonthStatus.Overdue, month.monthStatus)
         assertTrue(month.showsRejection)
         assertEquals("Wrong IBAN", month.declaration?.rejectionNote)
+        assertEquals(RentProofLine.DeclaredAndViewProof, month.proofLine)
     }
 
     @Test
@@ -65,6 +71,8 @@ class RentDecodingTest {
         assertNull(rent.months[0].monthStatus.labelKey)
         assertEquals("withdrawn", rent.months[1].declaration?.status)
         assertFalse(rent.months[1].showsRejection)
+        // Unknown declaration status on a declared month: the row still offers the proof.
+        assertEquals(RentProofLine.ViewProof, rent.months[1].proofLine)
     }
 
     @Test
@@ -93,11 +101,13 @@ val RENT_JSON = """
       "paidAt": null, "confirmedByWire": false, "declaration": null, "canDeclare": true },
     { "period": "2026-09", "dueDate": "2026-09-05T00:00:00.000Z", "expectedAmount": 800, "status": "declared",
       "paidAt": null, "confirmedByWire": false,
-      "declaration": { "id": "d2", "status": "pending", "declaredAmount": 800, "transferDate": "2026-09-03T00:00:00.000Z", "rejectionNote": null, "confirmedAt": null },
+      "declaration": { "id": "d2", "status": "pending", "declaredAmount": 800, "transferDate": "2026-09-03T00:00:00.000Z",
+        "declaredAt": "2026-09-04T08:30:00.000Z", "rejectionNote": null, "confirmedAt": null },
       "canDeclare": false },
     { "period": "2026-08", "dueDate": "2026-08-05T00:00:00.000Z", "expectedAmount": 800, "status": "paid",
       "paidAt": "2026-08-04T00:00:00.000Z", "confirmedByWire": true,
-      "declaration": { "id": "d1", "status": "confirmed", "declaredAmount": 800, "transferDate": "2026-08-04T00:00:00.000Z", "rejectionNote": null, "confirmedAt": "2026-08-05T10:00:00.000Z" },
+      "declaration": { "id": "d1", "status": "confirmed", "declaredAmount": 800, "transferDate": "2026-08-04T00:00:00.000Z",
+        "declaredAt": "2026-08-04T15:00:00.000Z", "rejectionNote": null, "confirmedAt": "2026-08-05T10:00:00.000Z" },
       "canDeclare": false, "futureField": 1 }
   ]
 }

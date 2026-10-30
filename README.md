@@ -68,7 +68,7 @@ The server treats the app as a *native tenant client* (server repo: `docs/tenant
   upload.** `smsConfigured: false` disables the "Send code" button with a notice.
 - Rent (phase 2): `GET /api/tenant/leases/:id/rent` (the months, newest first, each with
   `status` paid / declared / due / overdue / upcoming, `confirmedByWire`, the latest `declaration`
-  and `canDeclare`), `GET /api/tenant/leases/:id/wire-declarations` (the tenant's history) and
+  with its `declaredAt`, and `canDeclare`) and
   `POST /api/tenant/leases/:id/wire-declarations` — "I paid by bank transfer" as
   `multipart/form-data` with the text parts `periods` (JSON array of `YYYY-MM`), `declaredAmount`,
   `transferDate` (`YYYY-MM-DD`), `reference?` **before** the `proof` file (PDF / JPEG / PNG / WebP,
@@ -91,7 +91,8 @@ everywhere), forced update.
 Phase 2 — rent months + "I paid by bank transfer": the Home rent card shows the status pill of
 the newest month ("Wire confirmed by property owner" for a month settled through a declaration)
 and enables "I paid by bank transfer" when a month can be declared; the Payments tab lists the
-months ("Rent") and the tenant's declarations ("Your declarations", with "View proof"); the
+months ("Rent"), each with its declaration ("Declared dd/mm/yyyy", "View proof", and "Declare
+again" after a rejection); the
 Declare screen (month multi-select, amount prefilled from the picked months, transfer date up to
 today, optional reference, proof from camera / gallery / files) sends the multipart declaration.
 The Issues tab is still a placeholder. Light theme only (the approved mock-up). Compiled and

@@ -153,11 +153,7 @@
     <string name="rent_due_on">Due %1$s</string>
     <string name="rent_declare">I paid by bank transfer</string>
     <string name="rent_nothing_to_declare">Nothing to declare — every month is paid or already declared.</string>
-    <string name="rent_history">Your declarations</string>
-    <string name="rent_no_history">No bank-transfer declarations yet.</string>
-    <string name="rent_declaration_status_pending">Waiting for confirmation</string>
-    <string name="rent_declaration_status_confirmed">Confirmed by property owner</string>
-    <string name="rent_declaration_status_rejected">Not confirmed</string>
+    <string name="rent_declare_again">Declare again</string>
     <string name="rent_view_proof">View proof</string>
 
     <!-- "I paid by bank transfer" -->

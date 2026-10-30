@@ -1,6 +1,6 @@
 // Mirrors server/types/tenantPortal.types.ts (TenantRentResponse, TenantRentMonth) and
-// wireDeclarations.types.ts (TenantWireDeclarationResponse) — the tenant's rent months and
-// their "I paid by bank transfer" declarations. Statuses stay open StringValues.
+// wireDeclarations.types.ts (TenantWireDeclarationResponse) — the tenant's rent months, each with
+// its latest "I paid by bank transfer" declaration. Statuses stay open StringValues.
 @file:UseSerializers(ApiInstantSerializer::class)
 
 package one.lab5.kleidi.tenant.api.models
@@ -9,6 +9,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
 import one.lab5.kleidi.tenant.api.ApiInstantSerializer
 import one.lab5.kleidi.tenant.core.RentMonthStatus
+import one.lab5.kleidi.tenant.core.RentProofLine
 import one.lab5.kleidi.tenant.core.WireDeclarationStatus
 import java.time.Instant
 
@@ -19,6 +20,8 @@ data class TenantRentMonthDeclaration(
     val status: String,
     val declaredAmount: Double,
     val transferDate: Instant,
+    /** When the tenant submitted the declaration. */
+    val declaredAt: Instant,
     val rejectionNote: String? = null,
     val confirmedAt: Instant? = null,
 ) {
@@ -49,6 +52,10 @@ data class TenantRentMonth(
     val showsRejection: Boolean
         get() = monthStatus != RentMonthStatus.Paid && monthStatus != RentMonthStatus.Declared &&
             declaration?.declarationStatus == WireDeclarationStatus.Rejected
+
+    /** The "View proof" line under the pill, when the month's declaration has a proof worth opening. */
+    val proofLine: RentProofLine
+        get() = RentMonthStatus.proofLine(monthStatus, confirmedByWire, declaration?.declarationStatus)
 }
 
 /** `GET /tenant/leases/:id/rent` — newest month first. */
@@ -87,6 +94,3 @@ data class TenantWireDeclaration(
 ) {
     val declarationStatus: WireDeclarationStatus get() = WireDeclarationStatus(status)
 }
-
-@Serializable
-data class TenantWireDeclarationsResponse(val data: List<TenantWireDeclaration>)

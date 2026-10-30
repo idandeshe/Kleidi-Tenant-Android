@@ -1,4 +1,4 @@
-// The multipart declaration (part order, headers), the rent / history calls and the proof download.
+// The multipart declaration (part order, headers), the rent call and the proof download.
 
 package one.lab5.kleidi.tenant.api
 
@@ -8,7 +8,6 @@ import one.lab5.kleidi.tenant.api.endpoints.ProofUpload
 import one.lab5.kleidi.tenant.api.endpoints.buildDeclareWireForm
 import one.lab5.kleidi.tenant.api.endpoints.declareWire
 import one.lab5.kleidi.tenant.api.endpoints.rent
-import one.lab5.kleidi.tenant.api.endpoints.wireDeclarations
 import one.lab5.kleidi.tenant.api.endpoints.wireProof
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
@@ -68,17 +67,17 @@ class RentEndpointsTest {
     }
 
     @Test
-    fun rentAndHistoryAreRead() = runTest {
+    fun theRentIsRead() = runTest {
         val transport = ScriptedTransport { request ->
             when (request.path) {
                 "/api/tenant/leases/l1/rent" -> 200 to RENT_JSON
-                "/api/tenant/leases/l1/wire-declarations" -> 200 to """{"data":[$DECLARATION_JSON]}"""
                 else -> 404 to """{"error":"Not found"}"""
             }
         }
         val client = signedInClient(transport)
         assertEquals(3, client.rent("l1").months.size)
-        assertEquals(listOf("d1"), client.wireDeclarations("l1").map { it.id })
+        assertEquals("GET", transport.requests.single().method)
+        assertEquals("Bearer access-a", transport.requests.single().header("Authorization"))
     }
 
     @Test

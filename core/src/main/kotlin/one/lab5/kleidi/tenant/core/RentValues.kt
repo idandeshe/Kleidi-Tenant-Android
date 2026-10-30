@@ -29,18 +29,31 @@ value class RentMonthStatus(override val raw: String) : StringValue {
          */
         fun labelKey(status: RentMonthStatus, confirmedByWire: Boolean): String? =
             if (status == Paid && confirmedByWire) CONFIRMED_BY_WIRE_KEY else status.labelKey
+
+        /**
+         * The line under a month's pill that opens the declaration's proof (web `RentMonthRow`):
+         * a month waiting for confirmation shows "View proof" (its declared date is already on
+         * the right); a month paid through a confirmed wire, or one whose declaration was
+         * rejected, shows "Declared dd/mm/yyyy · View proof". Nothing otherwise.
+         */
+        fun proofLine(status: RentMonthStatus, confirmedByWire: Boolean, declaration: WireDeclarationStatus?): RentProofLine = when {
+            declaration == null -> RentProofLine.None
+            status == Declared -> RentProofLine.ViewProof
+            (status == Paid && confirmedByWire) || declaration == WireDeclarationStatus.Rejected -> RentProofLine.DeclaredAndViewProof
+            else -> RentProofLine.None
+        }
     }
 }
 
-/** `pending` | `confirmed` | `rejected`. */
+/** What a month row says about its declaration's proof — see [RentMonthStatus.proofLine]. */
+enum class RentProofLine { None, ViewProof, DeclaredAndViewProof }
+
+/** `pending` | `confirmed` | `rejected` — read through the month's status, never shown on its own. */
 @JvmInline
 value class WireDeclarationStatus(override val raw: String) : StringValue {
-    val labelKey: String? get() = if (this in KNOWN) "rent_declaration_status_$raw" else null
-
     companion object {
         val Pending = WireDeclarationStatus("pending")
         val Confirmed = WireDeclarationStatus("confirmed")
         val Rejected = WireDeclarationStatus("rejected")
-        private val KNOWN = setOf(Pending, Confirmed, Rejected)
     }
 }

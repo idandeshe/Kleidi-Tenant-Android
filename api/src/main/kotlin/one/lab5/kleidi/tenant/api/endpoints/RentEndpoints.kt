@@ -1,5 +1,5 @@
 // Rent months and bank-transfer declarations (tenant app phase 2): /api/tenant/leases/:id/rent,
-// /api/tenant/leases/:id/wire-declarations, /api/tenant/wire-declarations/:id/proof.
+// POST /api/tenant/leases/:id/wire-declarations, /api/tenant/wire-declarations/:id/proof.
 
 package one.lab5.kleidi.tenant.api.endpoints
 
@@ -12,7 +12,6 @@ import one.lab5.kleidi.tenant.api.KleidiJson
 import one.lab5.kleidi.tenant.api.MultipartForm
 import one.lab5.kleidi.tenant.api.models.TenantRent
 import one.lab5.kleidi.tenant.api.models.TenantWireDeclaration
-import one.lab5.kleidi.tenant.api.models.TenantWireDeclarationsResponse
 import one.lab5.kleidi.tenant.core.WireDeclarationRules
 
 /** The proof file as it goes up: already in a format the server accepts (photos re-encoded as JPEG by the app). */
@@ -36,10 +35,6 @@ class ProofFile(val bytes: ByteArray, val mimeType: String) {
 /** `GET /tenant/leases/:id/rent` — the months of one own lease, newest first. */
 suspend fun ApiClient.rent(leaseId: String): TenantRent =
     send(ApiRequest(HttpMethod.GET, "/tenant/leases/$leaseId/rent"), TenantRent.serializer())
-
-/** `GET /tenant/leases/:id/wire-declarations` — the tenant's declarations on this lease, newest first. */
-suspend fun ApiClient.wireDeclarations(leaseId: String): List<TenantWireDeclaration> =
-    send(ApiRequest(HttpMethod.GET, "/tenant/leases/$leaseId/wire-declarations"), TenantWireDeclarationsResponse.serializer()).data
 
 /**
  * `POST /tenant/leases/:id/wire-declarations` — "I paid by bank transfer". Multipart: the text

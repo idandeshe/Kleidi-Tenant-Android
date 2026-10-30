@@ -1,6 +1,7 @@
 // One rent month as the tenant sees it (web `RentMonthRow`): period, expected amount, the status
-// pill, "Paid / Declared / Due dd/mm/yyyy", and the red note when the last declaration on an owed
-// month was rejected. Plus one row of the declarations history ("Your declarations").
+// pill, "Paid / Declared / Due dd/mm/yyyy", the "(Declared dd/mm/yyyy ·) View proof" line of the
+// month's declaration, and the red note (with "Declare again") when the last declaration on an
+// owed month was rejected.
 
 package one.lab5.kleidi.tenant.features.payments
 
@@ -23,12 +24,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import one.lab5.kleidi.tenant.R
 import one.lab5.kleidi.tenant.api.models.TenantRentMonth
-import one.lab5.kleidi.tenant.api.models.TenantWireDeclaration
 import one.lab5.kleidi.tenant.core.KleidiDateFormatter
 import one.lab5.kleidi.tenant.core.LeaseFormatting
 import one.lab5.kleidi.tenant.core.RentFormatting
 import one.lab5.kleidi.tenant.core.RentMonthStatus
-import one.lab5.kleidi.tenant.core.WireDeclarationStatus
+import one.lab5.kleidi.tenant.core.RentProofLine
 import one.lab5.kleidi.tenant.features.home.notSet
 import one.lab5.kleidi.tenant.shell.LocalAppModel
 import one.lab5.kleidi.tenant.ui.InfoNote
@@ -36,16 +36,21 @@ import one.lab5.kleidi.tenant.ui.Pill
 import one.lab5.kleidi.tenant.ui.PillTone
 import one.lab5.kleidi.tenant.ui.TenantTheme
 
+/**
+ * [onViewProof] opens the proof of the month's declaration; [onDeclare] is the "Declare again"
+ * of a rejected month (same destination as "I paid by bank transfer").
+ */
 @Composable
-fun RentMonthRow(month: TenantRentMonth, currencyCode: String?) {
+fun RentMonthRow(month: TenantRentMonth, currencyCode: String?, onViewProof: (declarationId: String) -> Unit, onDeclare: () -> Unit) {
     val language = LocalAppModel.current.language
     val c = TenantTheme.colors
     val declaration = month.declaration
     val dateLine = when {
         month.monthStatus == RentMonthStatus.Paid && month.paidAt != null -> stringResource(R.string.rent_paid_on, KleidiDateFormatter.date(month.paidAt))
-        month.monthStatus == RentMonthStatus.Declared && declaration != null -> stringResource(R.string.rent_declared_on, KleidiDateFormatter.date(declaration.transferDate))
+        month.monthStatus == RentMonthStatus.Declared && declaration != null -> stringResource(R.string.rent_declared_on, KleidiDateFormatter.date(declaration.declaredAt))
         else -> stringResource(R.string.rent_due_on, KleidiDateFormatter.date(month.dueDate))
     }
+    val proofLine = month.proofLine
 
     Column(Modifier.fillMaxWidth().padding(vertical = 12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top) {
@@ -67,46 +72,36 @@ fun RentMonthRow(month: TenantRentMonth, currencyCode: String?) {
             Spacer(Modifier.width(12.dp))
             Text(dateLine, style = MaterialTheme.typography.bodySmall, color = c.secondaryText)
         }
+        if (declaration != null && proofLine != RentProofLine.None) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                if (proofLine == RentProofLine.DeclaredAndViewProof) {
+                    Text(
+                        stringResource(R.string.rent_declared_on, KleidiDateFormatter.date(declaration.declaredAt)) + " · ",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = c.secondaryText,
+                    )
+                }
+                LinkText(stringResource(R.string.rent_view_proof), onClick = { onViewProof(declaration.id) })
+                if (month.showsRejection && month.canDeclare) {
+                    Text(" · ", style = MaterialTheme.typography.bodySmall, color = c.secondaryText)
+                    LinkText(stringResource(R.string.rent_declare_again), onClick = onDeclare)
+                }
+            }
+        }
         if (month.showsRejection) RejectionNote(declaration?.rejectionNote)
     }
 }
 
-/** "Your declarations": months · amount, the status pill, "Declared dd/mm/yyyy · View proof". */
+/** An inline accent link ("View proof", "Declare again"). */
 @Composable
-fun DeclarationRow(declaration: TenantWireDeclaration, onViewProof: () -> Unit) {
-    val language = LocalAppModel.current.language
-    val c = TenantTheme.colors
-    val status = declaration.declarationStatus
-
-    Column(Modifier.fillMaxWidth().padding(vertical = 12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top) {
-            Text(
-                RentFormatting.periods(declaration.periods, language),
-                style = MaterialTheme.typography.titleSmall,
-                color = c.ink,
-                modifier = Modifier.weight(1f),
-            )
-            Spacer(Modifier.width(12.dp))
-            Text(LeaseFormatting.money(declaration.declaredAmount, declaration.currencyCode, language), style = MaterialTheme.typography.titleSmall, color = c.ink)
-        }
-        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Pill(status.label(), tone = RentLabels.declarationTone(status), modifier = Modifier.weight(1f, fill = false))
-            Spacer(Modifier.width(12.dp))
-            Text(
-                stringResource(R.string.rent_declared_on, KleidiDateFormatter.date(declaration.createdAt)) + " · ",
-                style = MaterialTheme.typography.bodySmall,
-                color = c.secondaryText,
-            )
-            Text(
-                stringResource(R.string.rent_view_proof),
-                style = MaterialTheme.typography.bodySmall,
-                color = c.accent,
-                fontWeight = FontWeight.SemiBold,
-                modifier = Modifier.clickable(onClick = onViewProof).padding(vertical = 4.dp),
-            )
-        }
-        if (status == WireDeclarationStatus.Rejected) RejectionNote(declaration.rejectionNote)
-    }
+private fun LinkText(text: String, onClick: () -> Unit) {
+    Text(
+        text,
+        style = MaterialTheme.typography.bodySmall,
+        color = TenantTheme.colors.accent,
+        fontWeight = FontWeight.SemiBold,
+        modifier = Modifier.clickable(onClick = onClick).padding(vertical = 4.dp),
+    )
 }
 
 /** "Wire not confirmed — please contact management" + "Note from management: …". */

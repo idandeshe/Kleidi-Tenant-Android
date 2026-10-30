@@ -1,7 +1,7 @@
-// Localized wording of the rent months and declarations (web `RentMonthRow` / `PaymentsPage`):
-// :core gives each known status a string-resource *name*; this maps the names to `R.string` ids,
-// picks the pill tone, humanizes anything newer than this build, and turns the declaration
-// endpoint's errors into copy.
+// Localized wording of the rent months (web `RentMonthRow` / `PaymentsPage`): :core gives each
+// known status a string-resource *name*; this maps the names to `R.string` ids, picks the pill
+// tone, humanizes anything newer than this build, and turns the declaration endpoint's errors
+// into copy.
 
 package one.lab5.kleidi.tenant.features.payments
 
@@ -14,7 +14,6 @@ import one.lab5.kleidi.tenant.api.ApiError
 import one.lab5.kleidi.tenant.api.models.TenantRentMonth
 import one.lab5.kleidi.tenant.core.RentMonthStatus
 import one.lab5.kleidi.tenant.core.WireDeclarationRules
-import one.lab5.kleidi.tenant.core.WireDeclarationStatus
 import one.lab5.kleidi.tenant.core.humanize
 import one.lab5.kleidi.tenant.shell.errorMessageRes
 import one.lab5.kleidi.tenant.ui.PillTone
@@ -29,18 +28,9 @@ object RentLabels {
         RentMonthStatus.CONFIRMED_BY_WIRE_KEY to R.string.rent_confirmed_by_wire,
     )
 
-    val DECLARATION_STATUS: Map<String, Int> = mapOf(
-        "rent_declaration_status_pending" to R.string.rent_declaration_status_pending,
-        "rent_declaration_status_confirmed" to R.string.rent_declaration_status_confirmed,
-        "rent_declaration_status_rejected" to R.string.rent_declaration_status_rejected,
-    )
-
     /** The pill wording of a month: "Wire confirmed by property owner" or its status. */
     fun month(resources: Resources, status: RentMonthStatus, confirmedByWire: Boolean): String =
         RentMonthStatus.labelKey(status, confirmedByWire)?.let(MONTH_STATUS::get)?.let(resources::getString) ?: humanize(status.raw)
-
-    fun declaration(resources: Resources, status: WireDeclarationStatus): String =
-        status.labelKey?.let(DECLARATION_STATUS::get)?.let(resources::getString) ?: humanize(status.raw)
 
     /** Web MONTH_STYLE: paid green, declared blue, due amber, overdue red, upcoming (and unknown) grey. */
     fun monthTone(status: RentMonthStatus): PillTone = when (status) {
@@ -48,14 +38,6 @@ object RentLabels {
         RentMonthStatus.Declared -> PillTone.Accent
         RentMonthStatus.Due -> PillTone.Warning
         RentMonthStatus.Overdue -> PillTone.Error
-        else -> PillTone.Neutral
-    }
-
-    /** Web DECLARATION_STYLE: pending blue, confirmed green, rejected red. */
-    fun declarationTone(status: WireDeclarationStatus): PillTone = when (status) {
-        WireDeclarationStatus.Pending -> PillTone.Accent
-        WireDeclarationStatus.Confirmed -> PillTone.Success
-        WireDeclarationStatus.Rejected -> PillTone.Error
         else -> PillTone.Neutral
     }
 
@@ -80,6 +62,3 @@ object RentLabels {
 
 @Composable @ReadOnlyComposable
 fun TenantRentMonth.statusLabel(): String = RentLabels.month(LocalResources.current, monthStatus, confirmedByWire)
-
-@Composable @ReadOnlyComposable
-fun WireDeclarationStatus.label(): String = RentLabels.declaration(LocalResources.current, this)
