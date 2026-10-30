@@ -109,10 +109,6 @@
     <string name="floor_upper_ground">Υπερυψωμένο ισόγειο</string>
     <string name="floor_numbered">%1$sος όροφος</string>
 
-    <!-- Προσωρινές οθόνες -->
-    <string name="placeholder_title">Έρχεται σε επόμενη έκδοση</string>
-    <string name="placeholder_issues_message">Εδώ θα δηλώνετε και θα παρακολουθείτε βλάβες.</string>
-
     <!-- Προφίλ -->
     <string name="profile_title">Προφίλ</string>
     <string name="profile_phone">Κινητό</string>
@@ -190,4 +186,63 @@
     <string name="error_wire_conflict">Ο μήνας αυτός είναι ήδη πληρωμένος ή ήδη δηλωμένος. Ανανεώστε και δοκιμάστε ξανά.</string>
     <string name="common_close">Κλείσιμο</string>
     <string name="common_ok">ΟΚ</string>
+    <!-- Βλάβες (φάση 3): η λίστα -->
+    <string name="issues_title">Βλάβες</string>
+    <string name="issues_report">Δηλώστε βλάβη</string>
+    <string name="issues_open">Ανοιχτές</string>
+    <string name="issues_resolved">Επιλυμένες</string>
+    <string name="issues_empty_title">Δεν υπάρχουν βλάβες</string>
+    <string name="issues_empty_message">Όταν κάτι χαλάσει, δηλώστε το εδώ και παρακολουθήστε την επισκευή.</string>
+    <string name="issues_reported_on">δηλώθηκε %1$s</string>
+    <string name="issues_resolved_on">επιλύθηκε %1$s</string>
+    <string name="issues_closed_on">έκλεισε %1$s</string>
+    <string name="issues_urgent">Επείγον</string>
+    <string name="issues_new_reply">Νέα απάντηση από τον διαχειριστή του ακινήτου</string>
+
+    <string name="issue_status_new">Παραλήφθηκε</string>
+    <string name="issue_status_in_progress">Σε εξέλιξη</string>
+    <string name="issue_status_resolved">Επιλύθηκε</string>
+    <string name="issue_status_closed">Έκλεισε</string>
+
+    <string name="issue_category_plumbing">Υδραυλικά</string>
+    <string name="issue_category_electrical">Ηλεκτρολογικά</string>
+    <string name="issue_category_heating_ac">Θέρμανση / Κλιματισμός</string>
+    <string name="issue_category_doors_locks">Πόρτες / κλειδαριές</string>
+    <string name="issue_category_building">Κτίριο</string>
+    <string name="issue_category_other">Άλλο</string>
+
+    <!-- «Δήλωση βλάβης» -->
+    <string name="report_title">Δήλωση βλάβης</string>
+    <string name="report_back">Πίσω</string>
+    <string name="report_category_label">Τι αφορά;</string>
+    <string name="report_description_label">Περιγράψτε το πρόβλημα</string>
+    <string name="report_description_placeholder">π.χ. Η βρύση της κουζίνας στάζει από τη Δευτέρα, ακόμη και κλειστή.</string>
+    <string name="report_photos_label">Φωτογραφίες</string>
+    <string name="report_photos_hint">(προαιρετικά, έως %1$d)</string>
+    <string name="report_add_photo">Προσθήκη φωτογραφίας</string>
+    <string name="report_remove_photo">Αφαίρεση φωτογραφίας</string>
+    <string name="report_urgent">Είναι επείγον (διαρροή, διακοπή ρεύματος, χωρίς θέρμανση, κλειδωμένη πόρτα)</string>
+    <string name="report_submit">Αποστολή στον διαχειριστή</string>
+    <string name="report_submitting">Αποστολή…</string>
+    <string name="report_category_required">Επιλέξτε τι αφορά η βλάβη.</string>
+    <string name="report_description_required">Περιγράψτε το πρόβλημα.</string>
+    <string name="issue_photo_type">Οι φωτογραφίες πρέπει να είναι JPG, PNG ή WebP.</string>
+    <string name="issue_photo_too_large">Η φωτογραφία ξεπερνά τα 10 MB.</string>
+
+    <!-- Η συζήτηση της βλάβης -->
+    <string name="issue_title">Βλάβη</string>
+    <string name="issue_photo">Φωτογραφία</string>
+    <string name="issue_received_at">Παραλήφθηκε · %1$s</string>
+    <string name="issue_status_changed">Η κατάσταση άλλαξε σε «%1$s» · %2$s</string>
+    <string name="issue_closed_by_management">Έκλεισε από τη διαχείριση · %1$s</string>
+    <string name="issue_resolved_on">Επιλύθηκε στις %1$s</string>
+    <string name="issue_author_you">Εσείς</string>
+    <string name="issue_author_staff">Διαχειριστής ακινήτου</string>
+    <string name="issue_message_placeholder">Γράψτε ένα μήνυμα…</string>
+    <string name="issue_add_photo">Προσθήκη φωτογραφίας</string>
+    <string name="issue_send">Αποστολή</string>
+    <string name="issue_reply_required">Γράψτε ένα μήνυμα ή προσθέστε φωτογραφία.</string>
+    <string name="issue_replies_closed">Μόλις επιλυθεί η βλάβη, οι απαντήσεις κλείνουν. Υπάρχει ακόμη πρόβλημα;</string>
+    <string name="issue_report_again">Δηλώστε την ξανά</string>
+    <string name="error_issue_reply_closed">Η βλάβη έχει επιλυθεί — οι απαντήσεις έκλεισαν. Αν το πρόβλημα επανήλθε, δηλώστε την ξανά.</string>
 </resources>

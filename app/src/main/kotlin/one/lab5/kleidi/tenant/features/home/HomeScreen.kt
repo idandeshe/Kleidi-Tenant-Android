@@ -70,7 +70,7 @@ import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(tenant: Tenant, onReportIssue: () -> Unit, onDeclare: (leaseId: String) -> Unit) {
+fun HomeScreen(tenant: Tenant, onReportIssue: (leaseId: String) -> Unit, onDeclare: (leaseId: String) -> Unit) {
     val app = LocalAppModel.current
     val scope = rememberCoroutineScope()
     val resources = LocalResources.current
@@ -127,7 +127,7 @@ fun HomeScreen(tenant: Tenant, onReportIssue: () -> Unit, onDeclare: (leaseId: S
                         RentCard(lease, rent)
                         PaymentActions(rent, onDeclare = { onDeclare(lease.id) }, showHint = true)
                         LeaseDetails(lease)
-                        ReportIssueRow(onReportIssue)
+                        ReportIssueRow(onClick = { onReportIssue(lease.id) })
                         Spacer(Modifier.height(8.dp))
                     }
                 }

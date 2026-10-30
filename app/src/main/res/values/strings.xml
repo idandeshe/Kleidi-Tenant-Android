@@ -111,10 +111,6 @@
     <string name="floor_upper_ground">Upper ground floor</string>
     <string name="floor_numbered">%1$s floor</string>
 
-    <!-- Placeholders -->
-    <string name="placeholder_title">Coming in a later release</string>
-    <string name="placeholder_issues_message">Report and follow maintenance issues here.</string>
-
     <!-- Profile -->
     <string name="profile_title">Profile</string>
     <string name="profile_phone">Mobile</string>
@@ -192,4 +188,63 @@
     <string name="error_wire_conflict">That month is already paid or already declared. Refresh and try again.</string>
     <string name="common_close">Close</string>
     <string name="common_ok">OK</string>
+    <!-- Issues (phase 3): the list -->
+    <string name="issues_title">Issues</string>
+    <string name="issues_report">Report an issue</string>
+    <string name="issues_open">Open</string>
+    <string name="issues_resolved">Resolved</string>
+    <string name="issues_empty_title">No issues yet</string>
+    <string name="issues_empty_message">When something breaks, report it here and follow the repair.</string>
+    <string name="issues_reported_on">reported %1$s</string>
+    <string name="issues_resolved_on">resolved %1$s</string>
+    <string name="issues_closed_on">closed %1$s</string>
+    <string name="issues_urgent">Urgent</string>
+    <string name="issues_new_reply">New reply from your property manager</string>
+
+    <string name="issue_status_new">Received</string>
+    <string name="issue_status_in_progress">In progress</string>
+    <string name="issue_status_resolved">Resolved</string>
+    <string name="issue_status_closed">Closed</string>
+
+    <string name="issue_category_plumbing">Plumbing</string>
+    <string name="issue_category_electrical">Electrical</string>
+    <string name="issue_category_heating_ac">Heating / AC</string>
+    <string name="issue_category_doors_locks">Doors / locks</string>
+    <string name="issue_category_building">Building</string>
+    <string name="issue_category_other">Other</string>
+
+    <!-- "Report an issue" -->
+    <string name="report_title">Report an issue</string>
+    <string name="report_back">Back</string>
+    <string name="report_category_label">What is it about?</string>
+    <string name="report_description_label">Describe the problem</string>
+    <string name="report_description_placeholder">e.g. The kitchen tap has been dripping since Monday, even when fully closed.</string>
+    <string name="report_photos_label">Photos</string>
+    <string name="report_photos_hint">(optional, up to %1$d)</string>
+    <string name="report_add_photo">Add a photo</string>
+    <string name="report_remove_photo">Remove photo</string>
+    <string name="report_urgent">It is urgent (leak, no power, no heating, lock-out)</string>
+    <string name="report_submit">Send to property manager</string>
+    <string name="report_submitting">Sending…</string>
+    <string name="report_category_required">Please pick what the issue is about.</string>
+    <string name="report_description_required">Please describe the problem.</string>
+    <string name="issue_photo_type">Photos must be JPG, PNG or WebP.</string>
+    <string name="issue_photo_too_large">The photo is larger than 10 MB.</string>
+
+    <!-- The issue thread -->
+    <string name="issue_title">Issue</string>
+    <string name="issue_photo">Photo</string>
+    <string name="issue_received_at">Received · %1$s</string>
+    <string name="issue_status_changed">Status changed to %1$s · %2$s</string>
+    <string name="issue_closed_by_management">Closed by management · %1$s</string>
+    <string name="issue_resolved_on">Resolved on %1$s</string>
+    <string name="issue_author_you">You</string>
+    <string name="issue_author_staff">Property manager</string>
+    <string name="issue_message_placeholder">Write a message…</string>
+    <string name="issue_add_photo">Add a photo</string>
+    <string name="issue_send">Send</string>
+    <string name="issue_reply_required">Write a message or add a photo.</string>
+    <string name="issue_replies_closed">Once the issue is resolved, replies close. Still a problem?</string>
+    <string name="issue_report_again">Report it again</string>
+    <string name="error_issue_reply_closed">This issue is resolved — replies are closed. If the problem is back, report it again.</string>
 </resources>

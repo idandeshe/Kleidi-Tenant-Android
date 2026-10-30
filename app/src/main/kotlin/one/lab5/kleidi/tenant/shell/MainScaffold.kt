@@ -26,9 +26,11 @@ import androidx.compose.ui.unit.dp
 import one.lab5.kleidi.tenant.R
 import one.lab5.kleidi.tenant.api.models.Tenant
 import one.lab5.kleidi.tenant.features.home.HomeScreen
+import one.lab5.kleidi.tenant.features.issues.IssueDetailScreen
+import one.lab5.kleidi.tenant.features.issues.IssuesScreen
+import one.lab5.kleidi.tenant.features.issues.ReportIssueScreen
 import one.lab5.kleidi.tenant.features.payments.DeclareWireScreen
 import one.lab5.kleidi.tenant.features.payments.PaymentsScreen
-import one.lab5.kleidi.tenant.features.placeholder.ComingSoonScreen
 import one.lab5.kleidi.tenant.features.profile.ProfileScreen
 import one.lab5.kleidi.tenant.ui.TenantTheme
 
@@ -41,15 +43,35 @@ enum class Tab(val labelRes: Int, val icon: ImageVector) {
 }
 
 /**
- * The signed-in app: the four tabs, plus the "Declare a bank transfer" screen pushed over them
- * from Home or Payments (it replaces the tab content and bottom bar while open, as on the web).
+ * The signed-in app: the four tabs, plus the screens pushed over them (they replace the tab
+ * content and bottom bar while open, as on the web): "Declare a bank transfer" from Home or
+ * Payments, "Report an issue" from Home or Issues, and an issue's thread from Issues (or right
+ * after reporting).
  */
 @Composable
 fun MainScaffold(tenant: Tenant) {
     var selected by rememberSaveable { mutableStateOf(Tab.Home) }
     var declaringLeaseId by rememberSaveable { mutableStateOf<String?>(null) }
+    var reportingLeaseId by rememberSaveable { mutableStateOf<String?>(null) }
+    var openIssueId by rememberSaveable { mutableStateOf<String?>(null) }
     val colors = TenantTheme.colors
 
+    reportingLeaseId?.let { leaseId ->
+        ReportIssueScreen(
+            leaseId = leaseId,
+            onCancel = { reportingLeaseId = null },
+            onReported = { issueId -> reportingLeaseId = null; openIssueId = issueId; selected = Tab.Issues },
+        )
+        return
+    }
+    openIssueId?.let { issueId ->
+        IssueDetailScreen(
+            issueId = issueId,
+            onBack = { openIssueId = null; selected = Tab.Issues },
+            onReportAgain = { reportingLeaseId = it },
+        )
+        return
+    }
     declaringLeaseId?.let { leaseId ->
         DeclareWireScreen(
             leaseId = leaseId,
@@ -84,9 +106,9 @@ fun MainScaffold(tenant: Tenant) {
     ) { padding ->
         Box(Modifier.fillMaxSize().padding(padding)) {
             when (selected) {
-                Tab.Home -> HomeScreen(tenant, onReportIssue = { selected = Tab.Issues }, onDeclare = { declaringLeaseId = it })
+                Tab.Home -> HomeScreen(tenant, onReportIssue = { reportingLeaseId = it }, onDeclare = { declaringLeaseId = it })
                 Tab.Payments -> PaymentsScreen(onDeclare = { declaringLeaseId = it })
-                Tab.Issues -> ComingSoonScreen(R.string.tab_issues, R.string.placeholder_issues_message)
+                Tab.Issues -> IssuesScreen(onReport = { reportingLeaseId = it }, onOpen = { openIssueId = it })
                 Tab.Profile -> ProfileScreen(tenant)
             }
         }

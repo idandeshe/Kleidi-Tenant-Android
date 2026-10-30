@@ -10,11 +10,11 @@ lease details, and (in later phases) payments and maintenance issues. A Kotlin /
 
 | Path | What |
 |------|------|
-| `core/` | Pure Kotlin: `AppLanguage` (EL / EN, device default), lease values (`LeaseStatus`, `PaymentMethod`, `FloorLevel`) and rent values (`RentMonthStatus`, `WireDeclarationStatus`) with their label keys, `LeaseFormatting` (money, rent month, ordinals, which lease to show), `RentFormatting` (`YYYY-MM` → month name), `WireDeclarationRules` (proof types / 15 MB, HEIC detection, amount prefill + parsing, multipart field names), `KleidiDateFormatter` (`DD/MM/YYYY`), `PhoneNumber` (E.164). |
-| `api/` | Pure Kotlin: `ApiClient` (tenant headers, Bearer, single-flight refresh, errors, events), serializable models (`Tenant`, `TenantConfig`, `TenantLease`, `TenantRent` / `TenantRentMonth`, `TenantWireDeclaration`), `endpoints/TenantEndpoints.kt`, `endpoints/RentEndpoints.kt` (rent months, declarations, multipart `declareWire`, proof download), `Multipart.kt`. OkHttp + kotlinx.serialization. |
+| `core/` | Pure Kotlin: `AppLanguage` (EL / EN, device default), lease values (`LeaseStatus`, `PaymentMethod`, `FloorLevel`), rent values (`RentMonthStatus`, `WireDeclarationStatus`) and issue values (`IssueCategory`, `IssueStatus` with `isOpen`, `IssueMessageKind`, `IssueAuthor`) with their label keys, `LeaseFormatting` (money, rent month, ordinals, which lease to show), `RentFormatting` (`YYYY-MM` → month name), `WireDeclarationRules` (proof types / 15 MB, HEIC detection, amount prefill + parsing, multipart field names), `IssueRules` (photo types / 10 MB, 5 report / 3 reply photos, multipart field names, when a reply can be sent), `KleidiDateFormatter` (`DD/MM/YYYY`, `DD/MM/YYYY HH:mm`), `PhoneNumber` (E.164). |
+| `api/` | Pure Kotlin: `ApiClient` (tenant headers, Bearer, single-flight refresh, errors, events), serializable models (`Tenant`, `TenantConfig`, `TenantLease`, `TenantRent` / `TenantRentMonth`, `TenantWireDeclaration`, `TenantIssue` / `TenantIssueDetail` / `TenantIssueMessage`), `endpoints/TenantEndpoints.kt`, `endpoints/RentEndpoints.kt` (rent months, declarations, multipart `declareWire`, proof download), `endpoints/IssueEndpoints.kt` (issues list, multipart `reportIssue` / `replyToIssue`, detail, photo download), `Multipart.kt`. OkHttp + kotlinx.serialization. |
 | `ui/` | Compose kit: `TenantTheme` (white ground, ink `#15202B`, accent `#1E5AA8`), cards, dashed card, pills, buttons, banners, `Loadable`. No strings. |
-| `app/.../shell/` | `AppModel` (session lifecycle), `ServerEnvironment`, Keystore `AndroidTokenStore`, `LanguagePreferences` (DataStore + `setApplicationLocales`), `ApiErrorText` (error → copy), `RootScreen`, `MainScaffold` (bottom tabs + the Declare screen pushed over them). |
-| `app/.../features/` | `onboarding/LanguageScreen`, `auth/` (`AuthFlow`, `PhoneScreen`, `CodeScreen`), `home/` (`HomeScreen`, `LeaseLabels`), `payments/` (`PaymentsScreen`, `RentMonthRow`, `DeclareWireScreen`, `ProofPicker`, `ProofViewer`, `RentLabels`), `profile/ProfileScreen`, `placeholder/ComingSoonScreen` (Issues). |
+| `app/.../shell/` | `AppModel` (session lifecycle), `ServerEnvironment`, Keystore `AndroidTokenStore`, `LanguagePreferences` (DataStore + `setApplicationLocales`), `ApiErrorText` (error → copy), `RootScreen`, `MainScaffold` (bottom tabs + the Declare, Report-an-issue and issue-thread screens pushed over them). |
+| `app/.../features/` | `onboarding/LanguageScreen`, `auth/` (`AuthFlow`, `PhoneScreen`, `CodeScreen`), `home/` (`HomeScreen`, `LeaseLabels`), `payments/` (`PaymentsScreen`, `RentMonthRow`, `DeclareWireScreen`, `ProofPicker`, `ProofViewer`, `RentLabels`), `issues/` (`IssuesScreen`, `ReportIssueScreen`, `IssueDetailScreen`, `IssuePhotoViewer`, `IssueLabels`), `profile/ProfileScreen`. |
 | `app/src/main/res/values{,-el}/strings.xml` | Every user-facing string, English and Greek. |
 
 ## Getting started
@@ -77,6 +77,16 @@ The server treats the app as a *native tenant client* (server repo: `docs/tenant
   EXIF and without metadata. `GET /api/tenant/wire-declarations/:id/proof` returns the file bytes
   — "View proof" downloads them with the Bearer token and shows an image, or renders a PDF with
   `PdfRenderer`. Statuses are open `StringValue`s: a new server value never breaks decoding.
+- Issues (phase 3): `GET /api/tenant/issues` (open first, then by last activity; each with
+  `category`, `summary`, `status` new / in_progress / resolved / closed, `isUrgent`, `tenantUnread`,
+  `canReply`), `POST /api/tenant/leases/:id/issues` — "Report an issue" as `multipart/form-data`
+  with the text parts `category`, `description`, `isUrgent` **before** 0–5 `photo` files (JPEG /
+  PNG / WebP, max 10 MB each, re-encoded like a proof photo; 5 reports per 10 minutes),
+  `GET /api/tenant/issues/:id` (the thread — tenant / staff messages and status events; marks the
+  issue seen), `POST /api/tenant/issues/:id/messages` (`body` then 0–3 `photo` parts; 409 once the
+  issue is resolved / closed → the composer is replaced by "Report it again") and
+  `GET /api/tenant/issues/:id/photos/:documentId` (bytes, fetched with the Bearer token). Staff
+  are shown as "Property manager", never by name; `new` reads "Received" to the tenant.
 - Language: chosen on the first screen (stored in DataStore, applied in-app with
   `AppCompatDelegate.setApplicationLocales`). After sign-in, if the tenant record's `language` differs
   from the phone's choice, the app sends `PATCH /api/tenant/me { language }` once; Profile → Language
@@ -95,5 +105,11 @@ months ("Rent"), each with its declaration ("Declared dd/mm/yyyy", "View proof",
 again" after a rejection); the
 Declare screen (month multi-select, amount prefilled from the picked months, transfer date up to
 today, optional reference, proof from camera / gallery / files) sends the multipart declaration.
-The Issues tab is still a placeholder. Light theme only (the approved mock-up). Compiled and
-unit-tested; **not yet run on a device or emulator** (the dev container has none).
+
+Phase 3 — maintenance issues: the Issues tab lists the tenant's issues in "Open" and "Resolved"
+groups (category icon, summary, status pill, urgent badge, "New reply from your property manager"
+dot); "Report an issue" (from Home or Issues) is the category grid, the description, up to five
+photos and the urgent checkbox; an issue opens as a thread (report card with photo thumbnails,
+staff and tenant bubbles, centred status changes) with a photo + text composer while it is open.
+Light theme only (the approved mock-up). Compiled and unit-tested; **not yet run on a device or
+emulator** (the dev container has none).

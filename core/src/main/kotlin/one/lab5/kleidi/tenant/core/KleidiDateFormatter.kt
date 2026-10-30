@@ -15,9 +15,14 @@ import java.time.format.DateTimeParseException
 
 object KleidiDateFormatter {
     private val DATE = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+    private val DATE_TIME = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")
 
     fun date(value: Instant?, zone: ZoneId = ZoneId.systemDefault()): String =
         value?.atZone(zone)?.format(DATE) ?: ""
+
+    /** "28/10/2026 10:15" — the web `formatDateTime` (24-hour clock). */
+    fun dateTime(value: Instant?, zone: ZoneId = ZoneId.systemDefault()): String =
+        value?.atZone(zone)?.format(DATE_TIME) ?: ""
 
     /** "Οκτώβριος 2026" / "October 2026" — the standalone month name of [language]. */
     fun month(value: YearMonth, language: AppLanguage): String =
