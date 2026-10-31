@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- A house with a key hole on the tenant-app blue. -->
+<!-- The staff app's key (κλειδί), as on the tenant iOS icon (Design/AppIcon.svg there): its 1024 px
+     artwork mapped onto the 72dp visible area of the 108dp adaptive layer. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <group android:translateX="30" android:translateY="28">
-        <path
-            android:fillColor="#FFFFFF"
-            android:pathData="M24,4L4,22h6v24h28V22h6L24,4zM24,26a4,4 0,0 1,4 4c0,1.6 -0.9,2.9 -2.2,3.6L27,40h-6l1.2,-6.4C20.9,32.9 20,31.6 20,30a4,4 0,0 1,4 -4z" />
-    </group>
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="5.83"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M31.93,54a10.41,10.41 0,1 0,20.82 0a10.41,10.41 0,1 0,-20.82 0zM52.75,54H73.15M66.49,54V62.33M73.15,54V59.83" />
 </vector>
