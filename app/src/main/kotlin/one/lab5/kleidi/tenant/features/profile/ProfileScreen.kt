@@ -39,6 +39,8 @@ import one.lab5.kleidi.tenant.R
 import one.lab5.kleidi.tenant.api.models.Tenant
 import one.lab5.kleidi.tenant.core.AppLanguage
 import one.lab5.kleidi.tenant.core.PhoneNumber
+import one.lab5.kleidi.tenant.shell.BrandMark
+import one.lab5.kleidi.tenant.shell.BrandMarkSize
 import one.lab5.kleidi.tenant.shell.LocalAppModel
 import one.lab5.kleidi.tenant.shell.ServerEnvironment
 import one.lab5.kleidi.tenant.shell.errorMessageRes
@@ -139,6 +141,7 @@ fun ProfileScreen(tenant: Tenant) {
                 )
             }
 
+            BrandMark(BrandMarkSize.Small)
             Text(
                 stringResource(R.string.profile_version, ServerEnvironment.appVersion, ServerEnvironment.clientBuild),
                 style = MaterialTheme.typography.bodySmall,

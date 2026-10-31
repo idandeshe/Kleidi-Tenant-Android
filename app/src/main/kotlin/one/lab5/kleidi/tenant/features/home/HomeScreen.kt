@@ -54,6 +54,8 @@ import one.lab5.kleidi.tenant.core.LeaseFormatting
 import one.lab5.kleidi.tenant.features.payments.PaymentActions
 import one.lab5.kleidi.tenant.features.payments.RentLabels
 import one.lab5.kleidi.tenant.features.payments.statusLabel
+import one.lab5.kleidi.tenant.shell.BrandMark
+import one.lab5.kleidi.tenant.shell.BrandMarkSize
 import one.lab5.kleidi.tenant.shell.LocalAppModel
 import one.lab5.kleidi.tenant.shell.errorMessageRes
 import one.lab5.kleidi.tenant.ui.DetailCell
@@ -139,6 +141,7 @@ fun HomeScreen(tenant: Tenant, onReportIssue: (leaseId: String) -> Unit, onDecla
 @Composable
 private fun Header(tenant: Tenant) {
     Column {
+        BrandMark(BrandMarkSize.Small, Modifier.padding(bottom = 12.dp))
         Text(stringResource(R.string.home_greeting, tenant.firstName), style = MaterialTheme.typography.bodyLarge, color = TenantTheme.colors.secondaryText)
         Text(stringResource(R.string.home_title), style = MaterialTheme.typography.headlineMedium, color = TenantTheme.colors.ink)
     }

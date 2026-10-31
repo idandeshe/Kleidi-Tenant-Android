@@ -27,6 +27,8 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import one.lab5.kleidi.tenant.R
 import one.lab5.kleidi.tenant.core.AppLanguage
+import one.lab5.kleidi.tenant.shell.BrandMark
+import one.lab5.kleidi.tenant.shell.BrandMarkSize
 import one.lab5.kleidi.tenant.shell.LanguagePreferences
 import one.lab5.kleidi.tenant.shell.LocalAppModel
 import one.lab5.kleidi.tenant.ui.ChoiceButton
@@ -46,6 +48,7 @@ fun LanguageScreen() {
     ) {
         Spacer(Modifier.weight(1f))
         Column(Modifier.widthIn(max = 420.dp).fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            BrandMark(BrandMarkSize.Large, Modifier.padding(bottom = 16.dp))
             // Both labels are endonyms: they read the same in either language on purpose.
             Text(stringResource(R.string.language_title), style = MaterialTheme.typography.headlineMedium, color = TenantTheme.colors.ink)
             Text(stringResource(R.string.language_subtitle), style = MaterialTheme.typography.bodyLarge, color = TenantTheme.colors.secondaryText)

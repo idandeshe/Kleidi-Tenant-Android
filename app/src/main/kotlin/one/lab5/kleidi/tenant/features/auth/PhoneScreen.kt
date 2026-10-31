@@ -37,6 +37,8 @@ import kotlinx.coroutines.launch
 import one.lab5.kleidi.tenant.R
 import one.lab5.kleidi.tenant.core.PhoneNumber
 import one.lab5.kleidi.tenant.shell.AppModel
+import one.lab5.kleidi.tenant.shell.BrandMark
+import one.lab5.kleidi.tenant.shell.BrandMarkSize
 import one.lab5.kleidi.tenant.shell.LocalAppModel
 import one.lab5.kleidi.tenant.shell.ServerEnvironment
 import one.lab5.kleidi.tenant.shell.errorMessageRes
@@ -87,6 +89,7 @@ fun PhoneScreen(notice: AppModel.Notice?, onCodeSent: (phone: String, expiresInS
             Modifier.widthIn(max = 420.dp).fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
+            BrandMark(BrandMarkSize.Large)
             Text("Kleidi", style = MaterialTheme.typography.displaySmall, color = TenantTheme.colors.accent)
             Text(stringResource(R.string.phone_title), style = MaterialTheme.typography.headlineSmall, color = TenantTheme.colors.ink)
             Text(stringResource(R.string.phone_subtitle), style = MaterialTheme.typography.bodyLarge, color = TenantTheme.colors.secondaryText)
