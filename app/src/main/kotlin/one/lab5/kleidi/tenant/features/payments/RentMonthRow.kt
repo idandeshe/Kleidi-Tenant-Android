@@ -23,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import one.lab5.kleidi.tenant.R
+import one.lab5.kleidi.tenant.core.AppLanguage
 import one.lab5.kleidi.tenant.api.models.TenantRentMonth
 import one.lab5.kleidi.tenant.core.KleidiDateFormatter
 import one.lab5.kleidi.tenant.core.LeaseFormatting
@@ -55,7 +56,7 @@ fun RentMonthRow(month: TenantRentMonth, currencyCode: String?, onViewProof: (de
     Column(Modifier.fillMaxWidth().padding(vertical = 12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top) {
             Text(
-                RentFormatting.period(month.period, language),
+                month.rentalMonthTitle(language),
                 style = MaterialTheme.typography.titleSmall,
                 color = c.ink,
                 modifier = Modifier.weight(1f),
@@ -67,6 +68,7 @@ fun RentMonthRow(month: TenantRentMonth, currencyCode: String?, onViewProof: (de
                 color = c.ink,
             )
         }
+        month.rentalMonthRange()?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = c.secondaryText) }
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             Pill(month.statusLabel(), tone = RentLabels.monthTone(month.monthStatus), modifier = Modifier.weight(1f, fill = false))
             Spacer(Modifier.width(12.dp))
@@ -90,6 +92,20 @@ fun RentMonthRow(month: TenantRentMonth, currencyCode: String?, onViewProof: (de
         }
         if (month.showsRejection) RejectionNote(declaration?.rejectionNote)
     }
+}
+
+/** "Rental Month · March 2027" (the month name alone on older servers). */
+@Composable
+internal fun TenantRentMonth.rentalMonthTitle(language: AppLanguage): String {
+    val name = RentFormatting.period(period, language)
+    return if (rentalMonthStart != null) stringResource(R.string.rent_rental_month, name) else name
+}
+
+/** "15/03/2027 – 14/04/2027": the row's Rental Month; null on older servers. */
+internal fun TenantRentMonth.rentalMonthRange(): String? {
+    val start = rentalMonthStart ?: return null
+    val end = rentalMonthEnd ?: return null
+    return "${KleidiDateFormatter.date(start)} – ${KleidiDateFormatter.date(end)}"
 }
 
 /** An inline accent link ("View proof", "Declare again"). */

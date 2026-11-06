@@ -8,6 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -46,6 +47,8 @@ import kotlinx.coroutines.launch
 import one.lab5.kleidi.tenant.R
 import one.lab5.kleidi.tenant.api.endpoints.leases
 import one.lab5.kleidi.tenant.api.endpoints.rent
+import one.lab5.kleidi.tenant.core.AppLanguage
+import one.lab5.kleidi.tenant.api.models.RentTimelineEntry
 import one.lab5.kleidi.tenant.api.models.Tenant
 import one.lab5.kleidi.tenant.api.models.TenantLease
 import one.lab5.kleidi.tenant.api.models.TenantRent
@@ -179,10 +182,12 @@ private fun RentCard(lease: TenantLease, rent: TenantRent?) {
                 color = c.ink,
             )
             Spacer(Modifier.weight(1f))
-            val thisMonth = rent?.newestMonth
+            val thisMonth = rent?.currentMonth()
             if (thisMonth != null) {
                 Pill(thisMonth.statusLabel(), tone = RentLabels.monthTone(thisMonth.monthStatus), modifier = Modifier.widthIn(max = 180.dp), singleLine = false)
-            } else {
+            } else if (rent == null) {
+                // The payment-day guess only stands in until the rent view loads; a loaded view
+                // without a row for this month has nothing to say.
                 lease.paymentDayOfMonth?.let { day ->
                     Pill(stringResource(R.string.home_due_pill, LeaseFormatting.dayOfMonthLabel(day, language)))
                 }
@@ -238,6 +243,37 @@ private fun LeaseDetails(lease: TenantLease) {
                     listOf(stringResource(R.string.lease_upcoming_rent) to LeaseFormatting.money(it.monthlyRent, lease.currencyCode, language))
                 } ?: emptyList()),
             )
+            lease.rentTimeline?.takeIf { it.size > 1 }?.let { timeline ->
+                Spacer(Modifier.height(16.dp))
+                RentByYear(timeline, lease.currentRentIndex(), lease.currencyCode, language)
+            }
+        }
+    }
+}
+
+/** Every rent of the lease with the date it starts, marking the one of today's row. */
+@Composable
+private fun RentByYear(timeline: List<RentTimelineEntry>, currentIndex: Int, currencyCode: String?, language: AppLanguage) {
+    val c = TenantTheme.colors
+    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        Text(stringResource(R.string.lease_rent_by_year), style = MaterialTheme.typography.bodySmall, color = c.secondaryText)
+        timeline.forEachIndexed { index, entry ->
+            val current = index == currentIndex
+            Row(Modifier.fillMaxWidth()) {
+                Text(
+                    KleidiDateFormatter.date(entry.effectiveFrom) + if (current) " · " + stringResource(R.string.lease_rent_now) else "",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = if (current) FontWeight.SemiBold else FontWeight.Normal,
+                    color = c.ink,
+                    modifier = Modifier.weight(1f),
+                )
+                Text(
+                    LeaseFormatting.money(entry.monthlyRent, currencyCode, language),
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = if (current) FontWeight.SemiBold else FontWeight.Normal,
+                    color = c.ink,
+                )
+            }
         }
     }
 }

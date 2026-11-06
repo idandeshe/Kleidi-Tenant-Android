@@ -34,6 +34,10 @@ data class TenantRentMonth(
     val period: String,
     /** UTC midnight of the day the rent is owed. */
     val dueDate: Instant,
+    /** First day of the Rental Month this row covers; null on older servers. */
+    val rentalMonthStart: Instant? = null,
+    /** Last day of the Rental Month this row covers; null on older servers. */
+    val rentalMonthEnd: Instant? = null,
     val expectedAmount: Double? = null,
     val status: String,
     val paidAt: Instant? = null,
@@ -68,8 +72,18 @@ data class TenantRent(
     val paymentDayOfMonth: Int? = null,
     val months: List<TenantRentMonth> = emptyList(),
 ) {
-    /** This month's row, when the lease has reached it (the rent card's pill). */
+    /** The newest row of the rent view. */
     val newestMonth: TenantRentMonth? get() = months.firstOrNull()
+
+    /**
+     * This calendar month's row (the rent card's pill), by the server's UTC month. None before the
+     * rent view reaches the month, and none in a lease's last weeks when the next Rental Month
+     * starts after its end — the newest row is then an earlier month.
+     */
+    fun currentMonth(today: Instant = Instant.now()): TenantRentMonth? {
+        val period = today.toString().take(7)
+        return months.firstOrNull { it.period == period }
+    }
 
     val canDeclare: Boolean get() = months.any { it.canDeclare }
 

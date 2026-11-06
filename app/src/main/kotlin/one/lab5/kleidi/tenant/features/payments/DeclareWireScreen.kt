@@ -370,7 +370,10 @@ private fun MonthChoice(month: TenantRentMonth, currencyCode: String?, selected:
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Checkbox(checked = selected, onCheckedChange = { onToggle() })
-        Text(RentFormatting.period(month.period, language), style = MaterialTheme.typography.titleSmall, color = c.ink, modifier = Modifier.weight(1f))
+        Column(Modifier.weight(1f)) {
+            Text(month.rentalMonthTitle(language), style = MaterialTheme.typography.titleSmall, color = c.ink)
+            month.rentalMonthRange()?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = c.secondaryText) }
+        }
         month.expectedAmount?.let {
             Spacer(Modifier.width(8.dp))
             Text(LeaseFormatting.money(it, currencyCode, language), style = MaterialTheme.typography.bodyMedium, color = c.secondaryText, modifier = Modifier.padding(end = 8.dp))

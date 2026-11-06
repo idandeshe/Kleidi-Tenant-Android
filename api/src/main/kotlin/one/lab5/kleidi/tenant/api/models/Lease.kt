@@ -35,6 +35,10 @@ data class TenantLeaseProperty(
 @Serializable
 data class UpcomingRent(val monthlyRent: Double, val effectiveFrom: Instant)
 
+/** One rent of the lease, from the first day of the Rental Month that first charges it. */
+@Serializable
+data class RentTimelineEntry(val effectiveFrom: Instant, val monthlyRent: Double)
+
 @Serializable
 data class TenantLease(
     val id: String,
@@ -44,9 +48,11 @@ data class TenantLease(
     val endDate: Instant? = null,
     /** The end date has passed while the lease is still open. */
     val isPastEnd: Boolean = false,
-    /** The rent that applies today. */
+    /** The rent of today's row. */
     val monthlyRent: Double,
     val upcomingRent: UpcomingRent? = null,
+    /** Every rent of the lease, oldest first; null on older servers. */
+    val rentTimeline: List<RentTimelineEntry>? = null,
     val currencyCode: String? = null,
     val depositAmount: Double? = null,
     val paymentDayOfMonth: Int? = null,
@@ -57,6 +63,16 @@ data class TenantLease(
 ) {
     val leaseStatus: LeaseStatus get() = LeaseStatus(status)
     val payment: PaymentMethod? get() = paymentMethod?.let(::PaymentMethod)
+
+    /**
+     * The timeline entry today's row falls in (`YYYY-MM` of [today], UTC): the last one whose
+     * month has arrived, matching the server's rule that a row carries its month's rent.
+     */
+    fun currentRentIndex(today: Instant = Instant.now()): Int {
+        val entries = rentTimeline ?: return -1
+        val period = today.toString().take(7)
+        return entries.indexOfLast { it.effectiveFrom.toString().take(7) <= period }
+    }
 }
 
 @Serializable

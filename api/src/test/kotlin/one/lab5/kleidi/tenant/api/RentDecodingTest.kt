@@ -64,6 +64,15 @@ class RentDecodingTest {
     }
 
     @Test
+    fun theCurrentMonthIsFoundByItsPeriodNotByPosition() {
+        val rent = KleidiJson.decodeFromString(TenantRent.serializer(), RENT_JSON)
+        val newest = rent.newestMonth!!
+        assertEquals(newest, rent.currentMonth(Instant.parse("${newest.period}-10T08:00:00Z")))
+        // A lease's last weeks: this month has no row, the newest one is an earlier month.
+        assertNull(rent.currentMonth(Instant.parse("2031-01-10T08:00:00Z")))
+    }
+
+    @Test
     fun unknownStatusesStillDecode() {
         val json = RENT_JSON.replace("\"status\": \"due\"", "\"status\": \"waived\"").replace("\"status\": \"pending\"", "\"status\": \"withdrawn\"")
         val rent = KleidiJson.decodeFromString(TenantRent.serializer(), json)

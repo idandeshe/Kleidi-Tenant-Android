@@ -61,7 +61,8 @@ object WireDeclarationRules {
 
     /** Sum of the expected rent of the picked months (months without an expected amount count as 0). */
     fun expectedTotal(selectedPeriods: Collection<String>, expectedAmounts: Map<String, Double?>): Double =
-        selectedPeriods.sumOf { expectedAmounts[it] ?: 0.0 }
+        // In whole cents: rents with cents must not add up to 2260.1299999.
+        Math.round(selectedPeriods.sumOf { expectedAmounts[it] ?: 0.0 } * 100) / 100.0
 
     /**
      * The amount field's prefill while the tenant has not typed in it: the expected total as a

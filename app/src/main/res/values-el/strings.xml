@@ -84,6 +84,8 @@
     <string name="lease_end_open">Αορίστου χρόνου</string>
     <string name="lease_rent">Μηνιαίο ενοίκιο</string>
     <string name="lease_upcoming_rent">Επόμενο ενοίκιο</string>
+    <string name="lease_rent_by_year">Ενοίκιο ανά έτος</string>
+    <string name="lease_rent_now">τώρα</string>
     <string name="lease_deposit">Εγγύηση</string>
     <string name="lease_payment_day">Ημέρα πληρωμής</string>
     <string name="lease_payment_day_value">Κάθε %1$s του μήνα</string>
@@ -152,6 +154,7 @@
     <string name="rent_declared_on">Δηλώθηκε %1$s</string>
     <string name="rent_paid_on">Πληρώθηκε %1$s</string>
     <string name="rent_due_on">Έως %1$s</string>
+    <string name="rent_rental_month">Μισθωτικός μήνας · %1$s</string>
     <string name="rent_declare">Πλήρωσα με τραπεζικό έμβασμα</string>
     <string name="rent_nothing_to_declare">Δεν υπάρχει κάτι να δηλώσετε — όλοι οι μήνες είναι πληρωμένοι ή ήδη δηλωμένοι.</string>
     <string name="rent_declare_again">Δηλώστε ξανά</string>
