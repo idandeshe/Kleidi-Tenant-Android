@@ -38,6 +38,7 @@ object LeaseLabels {
         "floor_semi_basement" to R.string.floor_semi_basement,
         "floor_ground" to R.string.floor_ground,
         "floor_upper_ground" to R.string.floor_upper_ground,
+        "floor_doma" to R.string.floor_doma,
     )
 
     fun status(resources: Resources, status: LeaseStatus): String =

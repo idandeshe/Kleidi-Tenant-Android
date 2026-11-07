@@ -21,7 +21,7 @@ class LeaseLabelsTest {
         listOf(PaymentMethod.BankTransfer, PaymentMethod.Cheques, PaymentMethod.Cash, PaymentMethod.StandingOrder, PaymentMethod.Other).forEach {
             assertTrue(it.raw, LeaseLabels.PAYMENT_METHOD.containsKey(it.labelKey))
         }
-        listOf(FloorLevel.Basement, FloorLevel.SemiBasement, FloorLevel.Ground, FloorLevel.UpperGround).forEach {
+        listOf(FloorLevel.Basement, FloorLevel.SemiBasement, FloorLevel.Ground, FloorLevel.UpperGround, FloorLevel.Doma).forEach {
             assertTrue(it.raw, LeaseLabels.FLOOR.containsKey(it.labelKey))
         }
     }

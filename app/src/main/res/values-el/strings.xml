@@ -113,6 +113,7 @@
     <string name="floor_semi_basement">Ημιυπόγειο</string>
     <string name="floor_ground">Ισόγειο</string>
     <string name="floor_upper_ground">Υπερυψωμένο ισόγειο</string>
+    <string name="floor_doma">Δώμα</string>
     <string name="floor_numbered">%1$sος όροφος</string>
 
     <!-- Προφίλ -->

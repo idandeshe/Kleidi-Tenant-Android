@@ -38,7 +38,7 @@ value class PaymentMethod(override val raw: String) : StringValue {
     }
 }
 
-/** `basement` | `semi_basement` | `ground` | `upper_ground` | `floor_<n>`. */
+/** `basement` | `semi_basement` | `ground` | `upper_ground` | `doma` | `floor_<n>`. */
 @JvmInline
 value class FloorLevel(override val raw: String) : StringValue {
     /** `floor_3` → 3; null for the named levels. */
@@ -52,6 +52,7 @@ value class FloorLevel(override val raw: String) : StringValue {
         val SemiBasement = FloorLevel("semi_basement")
         val Ground = FloorLevel("ground")
         val UpperGround = FloorLevel("upper_ground")
-        private val NAMED = setOf(Basement, SemiBasement, Ground, UpperGround)
+        val Doma = FloorLevel("doma")
+        private val NAMED = setOf(Basement, SemiBasement, Ground, UpperGround, Doma)
     }
 }

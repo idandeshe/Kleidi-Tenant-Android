@@ -115,6 +115,7 @@
     <string name="floor_semi_basement">Semi-basement</string>
     <string name="floor_ground">Ground floor</string>
     <string name="floor_upper_ground">Upper ground floor</string>
+    <string name="floor_doma">Doma</string>
     <string name="floor_numbered">%1$s floor</string>
 
     <!-- Profile -->
